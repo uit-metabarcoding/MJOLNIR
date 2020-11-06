@@ -1,6 +1,6 @@
 mjolnir_demulti_filter <- function(lib_prefix,cores,Lmin=299,Lmax=320){
   message("Doing paired-end alignment, demultiplexing and length filter.")
-  library(parallel)
+  suppressPackageStartupMessages(library(parallel))
   no_cores <- cores*length(lib_prefix)
   clust <- makeCluster(no_cores)
   X <- NULL
