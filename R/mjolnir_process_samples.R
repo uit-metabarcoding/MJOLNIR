@@ -19,9 +19,9 @@ mjolnir_process_samples <- function(libs,lib,cores){
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   message("Converting to vsearch format")
   X <- NULL
-  for (i in sample_list) X <- c(X,paste0("owi_obisample2vsearch -i ",i,".unique.fasta"))
+  for (i in sample_list) X <- c(X,paste0("i,".unique.fasta"))
   clusterExport(clust, "X",envir = environment())
-  parLapply(clust,X, function(x) system(x,intern=T,wait=T))
+  parLapply(clust,X, function(x) owi_obisample2vsearch(x))
   message("Removing Chimaeras in every sample")
   X <- NULL
   for (i in sample_list) X <- c(X,paste0("vsearch --uchime_denovo ",i,".unique.vsearch.fasta --sizeout --minh 0.90 --nonchimeras ",i,".nonchimeras.fasta --chimeras ",i,".chimeras.fasta --uchimeout ",i,".uchimeout.log"))
@@ -38,7 +38,7 @@ mjolnir_process_samples <- function(libs,lib,cores){
   message("Changing sequence identifiers to a short index")
   system(paste0("obiannotate --seq-rank ",lib,".unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,".new.fasta"),intern=T,wait=T)
   message("Changing format to vsearch, so we can use Swarm.")
-  system(paste0("owi_obifasta2vsearch -i ",lib,".new.fasta -o ",lib,".vsearch.fasta"),intern=T,wait=T)
+  owi_obifasta2vsearch(infile=paste0(lib,".new.fasta"),outfile=paste0(lib,".vsearch.fasta")
   message("File ",lib,".vsearch.fasta written.")
   message("Obtaining the table file with abundances")
   system(paste0("obitab -o ",lib,".new.fasta >  ",lib,".new.tab"),intern=T,wait=T)
