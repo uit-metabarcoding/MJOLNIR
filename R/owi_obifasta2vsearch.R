@@ -3,7 +3,7 @@
 ## If the output file argument is empty, it will just add ".vsearch.fasta" at the end of the name of the input file.
 ## By Owen S. Wangensteen - Project Metabarpark  2016
 
-owi_obifasta2vsearch <- function(infile,outfile=NULL,attrib=count){
+owi_obifasta2vsearch <- function(infile,outfile=NULL,attrib="count"){
   # if outfile is not provided, calculate it from the infile
   if (is.null(outfile)) outfile <- paste(substr(infile,1,nchar(infile)-6),".vsearch.fasta",sep="")
 
