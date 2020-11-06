@@ -38,7 +38,7 @@ mjolnir_process_samples <- function(libs,lib,cores){
   message("Changing sequence identifiers to a short index")
   system(paste0("obiannotate --seq-rank ",lib,".unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,".new.fasta"),intern=T,wait=T)
   message("Changing format to vsearch, so we can use Swarm.")
-  owi_obifasta2vsearch(infile=paste0(lib,".new.fasta"),outfile=paste0(lib,".vsearch.fasta")
+  owi_obifasta2vsearch(infile=paste0(lib,".new.fasta"),outfile=paste0(lib,".vsearch.fasta"))
   message("File ",lib,".vsearch.fasta written.")
   message("Obtaining the table file with abundances")
   system(paste0("obitab -o ",lib,".new.fasta >  ",lib,".new.tab"),intern=T,wait=T)
