@@ -10,7 +10,7 @@ mjolnir_process_samples <- function(libs,lib,cores){
   sample_db <- read.csv(paste0("sample_stats_",lib,".txt"),sep="\t",head=T)
   sample_list <- sample_db$sample[order(sample_db$sample)]
   message("Grouping unique sequences in every sample")
-  library(parallel)
+  suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
   clust <- makeCluster(no_cores)
   X <- NULL
