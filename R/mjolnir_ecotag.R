@@ -2,7 +2,7 @@ mjolnir_ecotag <- function(lib,cores,tax_dir,ref_db,taxo_db){
   message("Splitting seeds file in ",cores," fragments.")
   system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
   message("Taxonomic assignment with ecotag")
-  library(parallel)
+  suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
   clust <- makeCluster(no_cores)
   X <- NULL
