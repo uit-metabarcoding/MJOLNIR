@@ -13,7 +13,7 @@ MJOLNIR is an R package to do metabarcoding pipelines from R. MJOLNIR depends on
 - SWARM 2.0:
   Help on installing SWARM: https://github.com/torognes/swarm
   
--LULU:
+- LULU:
   Help on installing LULU:
   https://github.com/tobiasgf/lulu
 
