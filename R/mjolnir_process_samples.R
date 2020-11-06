@@ -19,7 +19,7 @@ mjolnir_process_samples <- function(libs,lib,cores){
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   message("Converting to vsearch format")
   X <- NULL
-  for (i in sample_list) X <- c(X,paste0("i,".unique.fasta"))
+  for (i in sample_list) X <- c(X,paste0(i,".unique.fasta"))
   clusterExport(clust, "X",envir = environment())
   parLapply(clust,X, function(x) owi_obisample2vsearch(x))
   message("Removing Chimaeras in every sample")
