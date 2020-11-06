@@ -26,7 +26,7 @@ owi_recount_swarm <-function(fileswarm,filetab){
   }
   cluster_reads  <- NULL
   for (i in 1:total_swarms) cluster_reads[i] <- sum(as.numeric(lapply(X=(clusters[[i]]),FUN=get_swarm_size)))
-
+  swarm_db_reduced <- swarm_db[cluster_reads>=min_reads]
   clusters <- strsplit(swarm_db_reduced,"; ")
   total_swarms_reduced <- length(swarm_db_reduced)
 
