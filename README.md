@@ -40,7 +40,8 @@ The following settings are recommended for 16S Bacterial F515/R806 primers (Capo
 
 The MJOLNIR Pipeline
 
-0. Input data.
+0. Input data
+
 MJOLNIR is optimized to process paired-end FASTQ files from Illumina sequencing of multiplexed libraries prepared using the METAFAST procedure. This procedure adds sample-tags on both ends of the amplicons, at 5' from the metabarcoding primers. Several samples (usually 96 or more) are multiplexed into a single metafast library. Each pair of fastq files belongs to a library (usually with several samples, identified by unique combination of forward:reverse sample-tags). MJOLNIR can process several such libraries simultaneously, spanning hundreds or thousands of samples, which will be joined together into a final combined dataset before the clustering step.
 
 1. Splitting of FASTQ files for parallel processing
