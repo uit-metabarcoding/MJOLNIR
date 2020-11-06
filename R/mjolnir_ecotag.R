@@ -12,7 +12,7 @@ mjolnir_ecotag <- function(lib,cores,tax_dir,ref_db,taxo_db){
   stopCluster(clust)
   message("Adding higher taxonomy ranks.")
   system(paste0("cat ",lib,".seeds.ecotag_??.fasta > ",lib,".ecotag.fasta"),intern=T,wait=T)
-  system(paste0("owi_add_taxonomy ",lib,".ecotag.fasta"),intern=T,wait=T)
+  owi_add_taxonomy(paste0(lib,".ecotag.fasta")
   message("Producing the combined file.")
-  system(paste0("owi_combine -i ",lib,".ecotag.fasta.annotated.csv -a ",lib,".SWARM_output.counts.csv -o ",lib,".All_MOTUs.csv"),intern=T,wait=T)
+  owi_combine(infile=paste0(lib,".ecotag.fasta.annotated.csv"),abundances=paste0(lib,".SWARM_output.counts.csv"),outfile=paste0(lib,".All_MOTUs.csv")
 }
