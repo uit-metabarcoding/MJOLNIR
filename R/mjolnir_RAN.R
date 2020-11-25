@@ -1,4 +1,6 @@
-mjolnir_distribute <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"){
+# RAN: Reads Allotment in N portions
+
+mjolnir_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"){
   message(paste0("Splitting initial files in ",cores," fragments each."))
   filelist <- NULL
   outfilelist <- NULL
