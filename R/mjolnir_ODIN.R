@@ -1,4 +1,6 @@
-mjolnir_swarm <- function(lib,cores,d=13){
+# ODIN: OTU Delimitation Inferred by Networks
+
+mjolnir_ODIN <- function(lib,cores,d=13){
   message("Clustering with Swarm.")
   system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
   message("Recounting after Swarm.")
