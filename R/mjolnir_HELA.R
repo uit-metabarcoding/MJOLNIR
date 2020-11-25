@@ -1,4 +1,11 @@
-mjolnir_process_samples <- function(libs,lib,cores){
+# HELA: Hierarchical Elimination of Lurking Artifacts
+
+# This function uses the uchime_denovo algorithm implemented in VSEARCH to remove chimaeric sequences from the dataset.
+# It works in a sample-by-sample basis. So the whole dataset is first split into individual fasta files for each sample.
+# This allows for parallel computing, significantly decreasing calculation times.  
+# The final dataset output is in VSEARCH format, so it can be directly fed into SWARM (ODIN).
+
+mjolnir_HELA <- function(libs,lib,cores){
   libslist <- NULL
   for (prefix in libs) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
   message("Joining filtered reads into a single file.")
