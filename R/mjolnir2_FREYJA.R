@@ -1,6 +1,6 @@
-FREYJA: Filtering of Reads, Enrollment, Yoke-reads Joining and Alignment  
+# FREYJA: Filtering of Reads, Enrollment, Yoke-reads Joining and Alignment  
 
-mjolnir_FREYJA <- function(lib_prefix,cores,Lmin=299,Lmax=320){
+mjolnir2_FREYJA <- function(lib_prefix,cores,Lmin=299,Lmax=320){
   message("Doing paired-end alignment, demultiplexing and length filter.")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores*length(lib_prefix)
