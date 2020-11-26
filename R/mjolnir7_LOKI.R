@@ -9,7 +9,7 @@
 # - A dataset of discarded MOTUs: LIBR.Discarded_LULU.csv
 # - A file with informaton on the fate of discarded MOTUs (with IDs of putative mother sequences): LIBR.Deleted_LULU_fate.csv  
 
-mjolnir_LOKI <- function(lib,min_id = .84){
+mjolnir7_LOKI <- function(lib,min_id = .84){
 
   # lib is the name of the library to be processed. Usually a four-character uppercase name.
   # Input file name must be in the format: LIBR.All_MOTUs.csv. Then lib must be = "LIBR"
