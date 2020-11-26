@@ -1,14 +1,15 @@
 # MJOLNIR
 MJOLNIR Metabarcoding Joining Obitools &amp; Linkage Networks In R
 
-MJOLNIR is an R package to run modular metabarcoding pipelines from the R environment. MJOLNIR runs on Linux and Mac systems. It is not clear to me if it can work in Windows 10 using the Ubuntu Linux subsystem. In any case, the extensive use of package parallel and several dependencies that are designed primarily for Linux systems (see below) makes the success of Windows installations highly improbable. Users are welcome to try to install and run MJOLNIR on Windows Linux Subsystem, but it is not recommended at all.
+MJOLNIR is an R package to run modular metabarcoding pipelines from the R environment. MJOLNIR runs on Linux and Mac systems. It is not clear to me if it may run in Windows 10 using the Ubuntu Linux subsystem. In any case, the extensive use of package parallel and several dependencies that are designed primarily for Linux systems (see below) makes the success of Windows installations highly improbable. Users are welcome to try to install and run MJOLNIR on Windows Linux Subsystem, but I do not recommended that.
 
 MJOLNIR depends on the following dependencies, which must be installed and properly working:
 
 - OBITools (Boyer et al. 2016):
   Original information about OBITools here: https://git.metabarcoding.org/obitools/obitools/wikis/home
   Help on installing OBITools: http://rleca.pbworks.com/w/file/fetch/124098201/tuto_obitools_install_W10OS.html
-  If this does not work, try: "sudo apt-get install obitools"
+  If this does not work, try: "sudo apt-get install obitools".
+  Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation.
 
 - VSEARCH (Rognes et al. 2016): 
   Help on installing VSEARCH: https://github.com/torognes/vsearch
