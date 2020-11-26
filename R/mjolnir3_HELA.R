@@ -5,7 +5,7 @@
 # This allows for parallel computing, significantly decreasing calculation times.  
 # The final dataset output is in VSEARCH format, so it can be directly fed into SWARM (ODIN).
 
-mjolnir_HELA <- function(libs,lib,cores){
+mjolnir3_HELA <- function(libs,lib,cores){
   libslist <- NULL
   for (prefix in libs) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
   message("Joining filtered reads into a single file.")
