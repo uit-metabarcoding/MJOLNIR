@@ -7,7 +7,7 @@
 ## ODIN deprecates the previous owi_recount_swarm script used in old metabarcoding pipelines (e.g. Project Metabarpark 2015).
 ## By Owen S. Wangensteen
 
-mjolnir_ODIN <- function(lib,cores,d=13,min_reads=2){
+mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
   # Minimum MOTU abundance to be kept in the output file can be selected. It is 2 by default.
   message("Clustering with Swarm.")
   system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
