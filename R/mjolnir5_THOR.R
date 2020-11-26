@@ -1,6 +1,6 @@
 # THOR: Taxonomy with Higher-than-Order Ranks
  
-mjolnir_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db){
+mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db){
   message("Splitting seeds file in ",cores," fragments.")
   system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
   message("Taxonomic assignment with ecotag")
