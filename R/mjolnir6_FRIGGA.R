@@ -11,7 +11,7 @@
 ## FRIGGA deprecates the owi_combine function from previous pipelines (Project Metabarpark, 2016).
 ## By Owen S. Wangensteen 
 
-mjolnir_FRIGGA <- function(lib=NULL,sept=";;"){
+mjolnir6_FRIGGA <- function(lib=NULL,sept=";;"){
   # sept = separator characters used in taxonomy-annotated file and abundances file, respectively (default: ';;' )
   message("Producing the combined file.")
 
