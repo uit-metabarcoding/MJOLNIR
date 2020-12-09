@@ -40,7 +40,7 @@ mjolnir6_FRIGGA <- function(lib=NULL,sept=";;"){
   db <- db[,!(names(db) %in% c("definition","ali_length","avg_quality","count","direction","experiment","forward_match","forward_primer","forward_score",
                              "forward_tag","goodali","head_quality","mid_quality","mode","position","reverse_match","reverse_primer","reverse_score","reverse_tag","score","score_norm",
                              "seq_a_deletion","seq_a_insertion","seq_a_mismatch","seq_a_single","seq_ab_match","seq_b_deletion","seq_b_insertion","seq_b_mismatch","seq_b_single",
-                             "seq_length_ori","seq_rank","status","tail_quality"))]
+                             "seq_length_ori","seq_rank","status","tail_quality","rank.1","scientific_name.1","best_identity.1"))]
 
   # Reorder total_counts and cluster weight columns
   db <- db[,c(1:4,ncol(db)-1,ncol(db)-2,5:ncol(db)-3,ncol(db))]
