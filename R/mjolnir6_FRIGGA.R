@@ -17,7 +17,7 @@ mjolnir6_FRIGGA <- function(lib=NULL,sept=";;"){
 
   infile=paste0(lib,".ecotag.fasta.annotated.csv")
   abundances=paste0(lib,".SWARM_output.counts.csv")
-  outfile=paste0(lib,".All_MOTUs.csv"))
+  outfile=paste0(lib,".All_MOTUs.csv")
 
   message("Reading ecotag-annotated database from THOR...")
   ecotag_db <- read.table(infile,sep=substr(sept,1,1),head=T,stringsAsFactors=F)
