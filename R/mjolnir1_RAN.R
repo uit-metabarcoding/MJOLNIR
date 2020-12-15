@@ -6,7 +6,7 @@ mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"
   outfilelist <- NULL
   for (file in R1_filenames) filelist <- c(filelist,file,gsub(R1_motif,R2_motif,file))
   for (prefix in libs) outfilelist <- c(outfilelist,paste0(prefix,"_R1_part"),paste0(prefix,"_R2_part"))
-  suppressPackageStartupMessages((library(parallel))
+  suppressPackageStartupMessages((library(parallel)))
   no_cores <- length(filelist)
   clust <- makeCluster(no_cores)
   X <- NULL
