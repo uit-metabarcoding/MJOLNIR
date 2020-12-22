@@ -22,9 +22,9 @@ mjolnir8_RAGNAROC <- function(lib,sample_table){
 # Reorder sample columns
     db_sample_ordered <- db[,sort(names(db[,sample_cols]))]
     new_total_reads <- rowSums(db_sample_ordered[,substr(names(db_sample_ordered),1,5)!="EMPTY"])
-    db_new <- cbind(db[,no_sample_cols[-length(no_sample_cols)]],db_sample_ordered,db[,length(db)])
-# Remove empty columns
-    db_new <- db_new[,substr(names(db_new),1,5)!="EMPTY"]
+    db_new <- cbind(db[,no_sample_cols[-length(no_sample_cols)]],db_sample_ordered,sequence=db[,length(db)])
+# Remove empty and duplicated columns
+    db_new <- db_new[,substr(names(db_new),1,5)!="EMPTY" & substr(names(db_new),(nchar(names(db_new))-1),nchar(names(db_new)))!=".1"]
 # Replace total_reads
     db_new$total_reads <- new_total_reads
 # Remove MOTUs with new total-reads==0
