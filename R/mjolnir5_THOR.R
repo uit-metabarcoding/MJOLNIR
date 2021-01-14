@@ -4,9 +4,9 @@
 # THOR replaces owi_add_taxonomy
  
 mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db){
-  message("Splitting seeds file in ",cores," fragments.")
+  message("THOR will split the seeds file into ",cores," fragments.")
   system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
-  message("Taxonomic assignment with ecotag")
+  message("THOR will assign the taxonomy to the order level with ecotag.")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
   clust <- makeCluster(no_cores)
@@ -15,7 +15,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db){
   clusterExport(clust, "X",envir = environment())
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
-  message("Adding higher taxonomy ranks.")
+  message("THOR will add higher taxonomic ranks now.")
   filefasta <-paste0(lib,".ecotag.fasta")
   system(paste0("cat ",lib,".seeds.ecotag_??.fasta > ",filefasta),intern=T,wait=T)
   outfile <-paste0(filefasta,".annotated.csv")
@@ -731,5 +731,5 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db){
                                   "best_match","species_list","taxid","sequence")]
 
   write.table(reordered_db.outt,outfile,row.names=F,col.names=T,sep=";",quote = FALSE)
-  message("Output file ",outfile," written with ",length(db), " sequences")
+  message("THOR is done. He wrote the output file ",outfile," with ",length(db), " assigned sequences.")
   }
