@@ -9,9 +9,9 @@
 
 mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
   # Minimum MOTU abundance to be kept in the output file can be selected. It is 2 by default.
-  message("Clustering with Swarm.")
+  message("ODIN will cluster sequences into MOTUs with SWARM.")
   system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
-  message("Recounting after Swarm.")
+  message("ODIN is recounting abundances after Swarm.")
   
   fileswarm=paste0(lib,".SWARM_output")
   filetab=paste0(lib,".new.tab")
@@ -22,13 +22,13 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
   }
 
   # Read cluster list database
-  message("Reading swarm database...")
+  message("ODIN is reading SWARM results...")
   swarm_db <- readLines(fileswarm)
   total_swarms <- length(swarm_db)
-  message("Cluster database read including ", total_swarms," total clusters.")
+  message("ODIN has read ", total_swarms," total MOTUs.")
 
   # Calculate reads in each cluster
-  message("Calculating number of reads in each cluster")
+  message("ODIN will calculate the number of reads in every sample for each MOTU.")
   clusters <- strsplit(swarm_db,"; ")
   for (i in 1:total_swarms) for (j in 1:length(clusters[[i]])) if (substr(clusters[[i]][[j]],nchar(clusters[[i]][[j]]),nchar(clusters[[i]][[j]]))==";"){
     clusters[[i]][[j]] <- substr(clusters[[i]][[j]],1,nchar(clusters[[i]][[j]])-1)
@@ -47,19 +47,19 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
 
   names(clusters) <- id
 
-  message("Kept only ", total_swarms_reduced," clusters of size greater than or equal to ",min_reads," reads.")
+  message("ODIN kept only ", total_swarms_reduced," MOTUs of size greater than or equal to ",min_reads," reads.")
   necesarios <- unlist(clusters, use.names=F)
 
   # Read counts database and keep only the needed clusters
-  message("Reading tabulated database. This could take a while...")
+  message("ODIN is reading the abundances database. This could take Him a while, since He has just one eye left, after all.")
   db <- read.table(filetab,sep="\t",head=T)
   numseqs <- nrow(db)
   db$id <- gsub(";","",db$id)
   db <- db[db$id %in% necesarios,]
   numseqs_reduced <- nrow(db)
   samples <- length(names(db)[substr(names(db),1,6)=="sample"])
-  message("Database read including ", numseqs," total different sequences and ",samples," samples.")
-  message("Kept only ", numseqs_reduced," sequences for calculations.")
+  message("ODIN finished reading the Database, which includes ", numseqs," total unique sequences and ",samples," samples.")
+  message("ODIN kept only ", numseqs_reduced," sequences for calculations.")
 
   db.total <- merge(data.frame(id),db,by="id") #Con esto se queda solo con los heads
   id <- db.total$id
@@ -79,8 +79,8 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
   write.table(db.total[,c(1:(ncol(db.total)-3),(ncol(db.total)-1):ncol(db.total),(ncol(db.total)-2))],outfile,sep=";",quote=F,row.names=F)
   message("File ", outfile, " written")
     
-  message("Removing singletons.")
+  message("ODIN is removing singleton MOTUs from the fasta output file, to make THOR's work an easier task.")
   system(paste0("sed -i 's/;size/ size/g' ",lib,".SWARM_seeds.fasta"),intern=T,wait=T)
   system(paste0("obigrep -p 'size>1' ",lib,".SWARM_seeds.fasta > ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
-  message("Done.")
+  message("ODIN is done.")
 }
