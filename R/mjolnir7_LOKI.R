@@ -65,5 +65,4 @@ mjolnir7_LOKI <- function(lib,min_id = .84){
   message("LOKI is done. He kept ",nrow(curated_db)," MOTUs in the curated database, which He stored in file: ",paste0(lib,".Curated_LULU.csv"))
   message("LOKI discarded ",nrow(discarded_db)," MOTUs, which He stored in file: ",paste0(lib,".Discarded_LULU.csv"))
   message("LOKI stored the fate of the discarded MOTUs in file: ",paste0(lib,".Deleted_LULU_fate.csv"))
-  message("Done!")
 }
