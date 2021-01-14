@@ -15,9 +15,9 @@ mjolnir7_LOKI <- function(lib,min_id = .84){
   # Input file name must be in the format: LIBR.All_MOTUs.csv. Then lib must be = "LIBR"
   # min_id is the minimum identity between two sequences to be kept in the match_list output. Default: 0.84 
   
-  message("Producing a pairwise match list for LULU.")
+  message("LOKI will produce a pairwise match list for LULU.")
   system(paste0("vsearch --usearch_global ",lib,".seeds_nonsingleton.fasta --db ",lib,".seeds_nonsingleton.fasta --self --id ",min_id," --iddef 1 --userout ",lib,".match_list.txt -userfields query+target+id --maxaccepts 0 --query_cov .9 --maxhits 10"),intern=T,wait=T)
-  message("Removing pseudogenes with LULU.")
+  message("LOKI will now remove the pseudogenes with LULU.")
   
   suppressPackageStartupMessages(library(lulu))
   
@@ -62,8 +62,8 @@ mjolnir7_LOKI <- function(lib,min_id = .84){
   }
   write.table(deleted_otu_fate,paste0(lib,".Deleted_LULU_fate.csv"),row.names = F,sep=";",quote = F)
 
-  message("LULU curation finished. ",nrow(curated_db)," MOTUs kept in the curated database. Stored in file: ",paste0(lib,".Curated_LULU.csv"))
-  message(nrow(discarded_db)," MOTUs discarded. Stored in file: ",paste0(lib,".Discarded_LULU.csv"))
-  message("The fate of the discarded MOTUs is stored and summarized in file: ",paste0(lib,".Deleted_LULU_fate.csv"))
+  message("LOKI is done. He kept ",nrow(curated_db)," MOTUs in the curated database, which He stored in file: ",paste0(lib,".Curated_LULU.csv"))
+  message("LOKI discarded ",nrow(discarded_db)," MOTUs, which He stored in file: ",paste0(lib,".Discarded_LULU.csv"))
+  message("LOKI stored the fate of the discarded MOTUs in file: ",paste0(lib,".Deleted_LULU_fate.csv"))
   message("Done!")
 }
