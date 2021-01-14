@@ -1,7 +1,7 @@
 # FREYJA: Filtering of Reads, Enrollment, Yoke-reads Joining and Alignment  
 
 mjolnir2_FREYJA <- function(lib_prefix,cores,Lmin=299,Lmax=320){
-  message("Doing paired-end alignment, demultiplexing and length filter.")
+  message("FREYJA will do paired-end alignment, demultiplexing and length filter.")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores*length(lib_prefix)
   clust <- makeCluster(no_cores)
@@ -12,5 +12,5 @@ mjolnir2_FREYJA <- function(lib_prefix,cores,Lmin=299,Lmax=320){
   clusterExport(clust, "X",envir = environment())
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
-  message("Filtering done.")
+  message("FREYJA is done.")
 }
