@@ -1,7 +1,7 @@
 # RAN: Reads Allotment in N portions
 
 mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"){
-  message(paste0("Splitting initial files in ",cores," fragments each."))
+  message(paste0("RAN will split initial FASTQ files in ",cores," fragments each."))
   filelist <- NULL
   outfilelist <- NULL
   for (file in R1_filenames) filelist <- c(filelist,file,gsub(R1_motif,R2_motif,file))
