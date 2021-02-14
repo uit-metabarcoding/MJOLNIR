@@ -20,7 +20,7 @@ mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"
   clusterExport(clust, "X",envir = environment())
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
-  for (file in outfilelist) for (j in 1:9) if (file.exists(paste0(file,"_",j,".fastq"))) system(paste0("mv ",file,"_",j,".fastq",file,"_",sprintf("%02d",j),".fastq"))
+  for (file in outfilelist) for (j in 1:9) if (file.exists(paste0(file,"_",j,".fastq"))) system(paste0("mv ",file,"_",j,".fastq ",file,"_",sprintf("%02d",j),".fastq"))
   message("Splitting done.")
 }
 
