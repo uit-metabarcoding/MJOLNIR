@@ -18,8 +18,8 @@ mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"
       for (i in 1:length(filelist)) {
         X <- c(X,paste0("cat ",filelist[i]," | obidistribute -n ",cores," -p \'",outfilelist[i],"\'"))
       }}
-  clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))})
-  clusterExport(clust, "X",envir = environment())
+  clusterExport(clust, list("X","old_path","obipath"),envir = environment())
+  clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
   for (file in outfilelist) for (j in 1:9) if (file.exists(paste0(file,"_",j,".fastq"))) system(paste0("mv ",file,"_",j,".fastq ",file,"_",sprintf("%02d",j),".fastq"))
