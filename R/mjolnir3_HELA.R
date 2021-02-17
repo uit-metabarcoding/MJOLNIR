@@ -20,6 +20,7 @@ mjolnir3_HELA <- function(libs,lib,cores,obipath=""){
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
   old_path <- Sys.getenv("PATH")
+  Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
   clust <- makeCluster(no_cores)
   X <- NULL
   for (i in sample_list) X <- c(X,paste0("obiuniq ",i,".fasta > ",i,".unique.fasta"))
