@@ -5,11 +5,12 @@
  
 mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath=""){
   message("THOR will split the seeds file into ",cores," fragments.")
+  old_path <- Sys.getenv("PATH")
+  Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))	
   system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
   message("THOR will assign the taxonomy to the order level with ecotag.")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
-  old_path <- Sys.getenv("PATH")
   clust <- makeCluster(no_cores)
   X <- NULL
   for (i in 1:cores) X <- c(X,paste0("ecotag -d ",tax_dir,"/",taxo_db," -R ",tax_dir,"/",ref_db," ",lib,".seeds_",sprintf("%02d",i),".fasta > ",lib,".seeds.ecotag_",sprintf("%02d",i),".fasta"))
