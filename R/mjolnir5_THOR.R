@@ -3,16 +3,18 @@
 # After assignment with ecotag, higher taxa at ranks higher than order are added from custom CSV files.
 # THOR replaces owi_add_taxonomy
  
-mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db){
+mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath=""){
   message("THOR will split the seeds file into ",cores," fragments.")
   system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
   message("THOR will assign the taxonomy to the order level with ecotag.")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
+  old_path <- Sys.getenv("PATH")
   clust <- makeCluster(no_cores)
   X <- NULL
   for (i in 1:cores) X <- c(X,paste0("ecotag -d ",tax_dir,"/",taxo_db," -R ",tax_dir,"/",ref_db," ",lib,".seeds_",sprintf("%02d",i),".fasta > ",lib,".seeds.ecotag_",sprintf("%02d",i),".fasta"))
-  clusterExport(clust, "X",envir = environment())
+  clusterExport(clust, list("X","old_path","obipath"),envir = environment())
+  clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
   message("THOR will add higher taxonomic ranks now.")
