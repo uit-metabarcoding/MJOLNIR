@@ -8,6 +8,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath=""){
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))	
   system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
+  for (j in 1:9) if (file.exists(paste0(lib,".seeds_",j,".fasta"))) system(paste0("mv ",lib,".seeds_",j,".fasta ",lib,".seeds_",sprintf("%02d",j),".fasta"))
   message("THOR will assign the taxonomy to the order level with ecotag.")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
