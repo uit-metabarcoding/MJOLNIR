@@ -1,6 +1,6 @@
 # RAN: Reads Allotment in N portions
 
-mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"){
+mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2",obipath=""){
   message(paste0("RAN will split initial FASTQ files in ",cores," fragments each."))
   filelist <- NULL
   outfilelist <- NULL
@@ -8,6 +8,7 @@ mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"
   for (prefix in libs) outfilelist <- c(outfilelist,paste0(prefix,"_R1_part"),paste0(prefix,"_R2_part"))
   suppressPackageStartupMessages((library(parallel)))
   no_cores <- length(filelist)
+  old_path <- Sys.getenv("PATH")
   clust <- makeCluster(no_cores)
   X <- NULL
   if (grepl(".gz",filelist[1])) {
@@ -17,6 +18,7 @@ mjolnir1_RAN <- function(R1_filenames,cores,libs,R1_motif="L1_1",R2_motif="L1_2"
       for (i in 1:length(filelist)) {
         X <- c(X,paste0("cat ",filelist[i]," | obidistribute -n ",cores," -p \'",outfilelist[i],"\'"))
       }}
+  clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))})
   clusterExport(clust, "X",envir = environment())
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
