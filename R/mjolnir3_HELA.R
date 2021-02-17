@@ -5,7 +5,7 @@
 # This allows for parallel computing, significantly decreasing calculation times.  
 # The final dataset output is in VSEARCH format, so it can be directly fed into SWARM (ODIN).
 
-mjolnir3_HELA <- function(libs,lib,cores){
+mjolnir3_HELA <- function(libs,lib,cores,obipath=""){
   libslist <- NULL
   for (prefix in libs) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
   message("HELA is joining filtered reads into a single file.")
@@ -19,6 +19,7 @@ mjolnir3_HELA <- function(libs,lib,cores){
   message("HELA will group unique sequences in every sample")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
+  old_path <- Sys.getenv("PATH")
   clust <- makeCluster(no_cores)
   X <- NULL
   for (i in sample_list) X <- c(X,paste0("obiuniq ",i,".fasta > ",i,".unique.fasta"))
@@ -27,7 +28,8 @@ mjolnir3_HELA <- function(libs,lib,cores){
   message("HELA will convert every sample file to vsearch format")
   X <- NULL
   for (i in sample_list) X <- c(X,paste0(i,".unique.fasta"))
-  clusterExport(clust, "X",envir = environment())
+  clusterExport(clust, list("X","old_path","obipath"),envir = environment())
+  clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) owi_obisample2vsearch(x))
   message("HELA will remove chimaeras from each sample")
   X <- NULL
