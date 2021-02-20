@@ -1,7 +1,7 @@
 # RAGNAROC: Replace AGnomens with Names And Recover Original Codification
 
 
-mjolnir8_RAGNAROC <- function(lib,sample_table){
+mjolnir8_RAGNAROC <- function(lib,sample_table,output_file){
     message("RAGNAROC is coming. Original sample names will be recovered.")
     #Load the dataset
         # If LULU file exists, load it, otherwise load the All_MOTUs file
@@ -31,6 +31,7 @@ mjolnir8_RAGNAROC <- function(lib,sample_table){
     # Remove MOTUs with new total-reads==0
         db_new <- db_new[db_new$total_reads>0,]
     # Write final table
-        write.table(db_new,paste0(lib,".final_dataset.csv"),row.names = F,sep=";",quote = F)
+        if (output_file=="") output_file <- paste0(lib,".final_dataset.csv") 
+        write.table(db_new,output_file,row.names = F,sep=";",quote = F)
         message("After RAGNAROC, MJOLNIR is done. File: ",paste0(lib,".final_dataset.csv"), " written with ",nrow(db_new), " MOTUs and ",sum(db_new$total_reads)," total reads.")
 }
