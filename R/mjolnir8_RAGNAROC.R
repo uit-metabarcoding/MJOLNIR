@@ -33,5 +33,5 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file){
     # Write final table
         if (output_file=="") output_file <- paste0(lib,".final_dataset.csv") 
         write.table(db_new,output_file,row.names = F,sep=";",quote = F)
-        message("After RAGNAROC, MJOLNIR is done. File: ",paste0(lib,".final_dataset.csv"), " written with ",nrow(db_new), " MOTUs and ",sum(db_new$total_reads)," total reads.")
+        message("After RAGNAROC, MJOLNIR is done. File: ",output_file, " written with ",nrow(db_new), " MOTUs and ",sum(db_new$total_reads)," total reads.")
 }
