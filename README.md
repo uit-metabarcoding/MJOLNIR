@@ -43,8 +43,10 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
 
 - Package Biostrings from the Bioconductor suite. https://bioconductor.org/packages/release/bioc/html/Biostrings.html 
   To install Biostrings, type the following commands in the R console:
-   if (!requireNamespace("BiocManager", quietly = TRUE))  install.packages("BiocManager")
-   BiocManager::install("Biostrings")
+ 
+      if (!requireNamespace("BiocManager", quietly = TRUE))  install.packages("BiocManager")
+      BiocManager::install("Biostrings")
+                  
 
 Installing MJOLNIR:
 
