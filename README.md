@@ -5,15 +5,31 @@
 
 <b>by Owen S. Wangensteen (UiT, The Arctic University of Norway)</b>
 
-MJOLNIR is an R package to run modular metabarcoding pipelines from the R environment. MJOLNIR runs on Linux and Mac systems. It is not clear to me if it may run in Windows 10 using the Ubuntu Linux subsystem. In any case, the extensive use of package parallel and several dependencies that are designed primarily for Linux systems (see below) makes the success of Windows installations highly improbable. Users are welcome to try to install and run MJOLNIR on Windows Linux Subsystem, but I would not recommended that.
+MJOLNIR is an R package to run modular metabarcoding pipelines from the R environment. MJOLNIR runs on Linux and Mac systems. It is not clear to me if it might run in Windows 10 using the Ubuntu Linux subsystem. In any case, the extensive use of package parallel and several dependencies that are designed primarily for Linux systems (see below) makes the success of installations in Windows highly improbable. Users are welcome to try to install and run MJOLNIR on Windows Linux Subsystem, but I would not recommend that.
 
 MJOLNIR depends on the following dependencies, which must be installed in the system and properly working:
 
 - OBITools (Boyer et al. 2016):
   Original information about OBITools here: https://git.metabarcoding.org/obitools/obitools/wikis/home
   Help on installing OBITools: http://rleca.pbworks.com/w/file/fetch/124098201/tuto_obitools_install_W10OS.html
-  If this does not work, try: "sudo apt-get install obitools".
-  Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation.
+  If this does not work for you, The following set of commands would work in most systems for installing OBITools 2, based on recommendations by Frederic Boyer (https://www.biostars.org/p/235898/)
+
+   sudo apt install python2
+   sudo pip install virtualenv
+   mkdir ~/OBI
+   cd ~/OBI
+   virtualenv --python=python2 OBI-env
+   source ~/OBI/OBI-env/bin/activate
+   sudo apt-get install python-dev
+   pip install sphinx==1.4.8 cython
+   wget 'https://git.metabarcoding.org/obitools/obitools/repository/archive.tar.gz?ref=master'
+   tar -zxvf "archive.tar.gz?ref=master"
+   cd obitools-master-*
+   python2 setup.py build
+   python2 setup.py install
+   export PATH=${PATH}:"~/OBI/OBI-env/bin"
+
+  Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the previous commands,  
 
 - VSEARCH (Rognes et al. 2016): 
   Help on installing VSEARCH: https://github.com/torognes/vsearch
@@ -24,6 +40,11 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
 - LULU (Frøslev et al. 2017):
   Help on installing LULU:
   https://github.com/tobiasgf/lulu
+
+- Package Biostrings from the Bioconductor suite. https://bioconductor.org/packages/release/bioc/html/Biostrings.html 
+  To install Biostrings, type the following commands in the R console:
+   if (!requireNamespace("BiocManager", quietly = TRUE))  install.packages("BiocManager")
+   BiocManager::install("Biostrings")
 
 Installing MJOLNIR:
 
