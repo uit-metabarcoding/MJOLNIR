@@ -51,12 +51,14 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
 Installing MJOLNIR:
 
 1. If the devtools library is properly installed in the system: MJOLNIR can be installed directly from the R console using:
-library(devtools)
-install_github("uit-metabarcoding/MJOLNIR")
+
+      library(devtools)
+      install_github("uit-metabarcoding/MJOLNIR")
 
 2. If the devtools library is not installed, then MJOLNIR can be downloaded as a package from this link: https://github.com/uit-metabarcoding/MJOLNIR/archive/main.zip
 Then the file must be unzipped and MJOLNIR can be installed offline from the R console using:
-install.packages("MJOLNIR-main", repos=NULL)
+
+      install.packages("MJOLNIR-main", repos=NULL)
 
 MJOLNIR is currently optimized by default to process COI metabarcoding data (the Leray Fragment). For other metabarcoding markers, some settings must be changed as follows:
 
