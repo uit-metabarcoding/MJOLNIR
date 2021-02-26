@@ -14,20 +14,20 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
   Help on installing OBITools: http://rleca.pbworks.com/w/file/fetch/124098201/tuto_obitools_install_W10OS.html
   If this does not work for you, The following set of commands would work in most systems for installing OBITools 2, based on recommendations by Frederic Boyer (https://www.biostars.org/p/235898/)
 
-   sudo apt install python2
-   sudo pip install virtualenv
-   mkdir ~/OBI
-   cd ~/OBI
-   virtualenv --python=python2 OBI-env
-   source ~/OBI/OBI-env/bin/activate
-   sudo apt-get install python-dev
-   pip install sphinx==1.4.8 cython
-   wget 'https://git.metabarcoding.org/obitools/obitools/repository/archive.tar.gz?ref=master'
-   tar -zxvf "archive.tar.gz?ref=master"
-   cd obitools-master-*
-   python2 setup.py build
-   python2 setup.py install
-   export PATH=${PATH}:"~/OBI/OBI-env/bin"
+      sudo apt install python2
+      sudo pip install virtualenv
+      mkdir ~/OBI
+      cd ~/OBI 
+      virtualenv --python=python2 OBI-env
+      source ~/OBI/OBI-env/bin/activate
+      sudo apt-get install python-dev
+      pip install sphinx==1.4.8 cython
+      wget "https://git.metabarcoding.org/obitools/obitools/repository/archive.tar.gz?ref=master"
+      tar -zxvf "archive.tar.gz?ref=master"
+      cd obitools-master-*
+      python2 setup.py build
+      python2 setup.py install
+      export PATH=${PATH}:"~/OBI/OBI-env/bin"
 
   Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the previous commands,  
 
