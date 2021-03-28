@@ -18,7 +18,7 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file){
         agnomens_true <- sample_names %in% sample_db$mjolnir_agnomens
         for (i in 1:length(sample_names)) if (agnomens_true[i]) new_sample_names[i] <- sample_db$original_samples[sample_db$mjolnir_agnomens==sample_names[i]]
         empty_samples <- new_sample_names==""
-        for (i in 1:sum(empty_samples)) new_sample_names[empty_samples][i] <- paste0("EMPTY",i)
+        if (sum(empty_samples)>0) for (i in 1:sum(empty_samples)) new_sample_names[empty_samples][i] <- paste0("EMPTY",i)
         for (i in 1:length(sample_cols)) names(db)[names(db)==sample_names[i]] <- new_sample_names[i]
     # Reorder sample columns
         db_sample_ordered <- db[,sort(names(db[,sample_cols]))]
