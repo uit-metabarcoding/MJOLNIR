@@ -7,12 +7,13 @@
 ## ODIN deprecates the previous owi_recount_swarm script used in old metabarcoding pipelines (e.g. Project Metabarpark 2015).
 ## By Owen S. Wangensteen
 
-mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
+mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2,run_swarm=TRUE,generate_ASV=TRUE){
   # Minimum MOTU abundance to be kept in the output file can be selected. It is 2 by default.
-  message("ODIN will cluster sequences into MOTUs with SWARM.")
-  system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
-  message("ODIN is recounting abundances after Swarm.")
-  
+  if (run_swarm){
+    message("ODIN will cluster sequences into MOTUs with SWARM.")
+    system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
+    message("ODIN will recount abundances for every MOTU after Swarm.")
+  }
   fileswarm=paste0(lib,".SWARM_output")
   filetab=paste0(lib,".new.tab")
   outfile <-paste(fileswarm,".counts.csv",sep="")
@@ -28,7 +29,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
   message("ODIN has read ", total_swarms," total MOTUs.")
 
   # Calculate reads in each cluster
-  message("ODIN will calculate the number of reads in every sample for each MOTU.")
+  message("ODIN will now calculate the number of reads in every sample for each MOTU.")
   clusters <- strsplit(swarm_db,"; ")
   for (i in 1:total_swarms) for (j in 1:length(clusters[[i]])) if (substr(clusters[[i]][[j]],nchar(clusters[[i]][[j]]),nchar(clusters[[i]][[j]]))==";"){
     clusters[[i]][[j]] <- substr(clusters[[i]][[j]],1,nchar(clusters[[i]][[j]])-1)
@@ -49,7 +50,12 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
 
   message("ODIN kept only ", total_swarms_reduced," MOTUs of size greater than or equal to ",min_reads," reads.")
   necesarios <- unlist(clusters, use.names=F)
-
+  
+  # Generate a file with the list of ids of non-singleton clusters
+  motulist <- file(paste0(lib,"_non_singleton_motu_list.txt"),"wt")
+  writeLines(id,motulist)
+  message("ODIN has created the file ",paste0(lib,"_non_singleton_motu_list.txt")," with the list of identifiers of non-singleton MOTUs.")
+  
   # Read counts database and keep only the needed clusters
   message("ODIN is reading the abundances database. This could take Him a while, since He has just one eye left, after all.")
   db <- read.table(filetab,sep="\t",head=T)
@@ -61,14 +67,16 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2){
   message("ODIN finished reading the Database, which includes ", numseqs," total unique sequences and ",samples," samples.")
   message("ODIN kept only ", numseqs_reduced," sequences for calculations.")
 
-  db.total <- merge(data.frame(id),db,by="id") #Con esto se queda solo con los heads
+  db.total <- merge(data.frame(id),db,by="id") # This will keep just the heads
   id <- db.total$id
   numclust <- nrow(db.total)
 
+  if (generate_ASV) dir.create(MOTU_tsv, showWarnings = FALSE)
   for (fila in 1:numclust){
     head <- id[fila]
     tails <- unlist(clusters[names(clusters)==head])
     db.reduced <- db[db$id %in% tails,]
+    if (generate_ASV) write.table(db.reduced,paste0("MOTU_tsv/",head),sep="\t",quote=F,row.names=F)
     suma <- colSums(db.reduced[,substr(names(db.total),1,6)=="sample"])
     db.total[fila,substr(names(db.total),1,6)=="sample"] <- suma
     db.total$cluster_weight[fila] <- nrow(db.reduced)
