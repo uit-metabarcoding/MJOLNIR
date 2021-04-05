@@ -8,7 +8,7 @@
 ## Three optional parameters: the clustering distance d (default=13), the minimum number of reads to keep a MOTU in the MOTU table (default=2),
 ## and the minimum number of reads to keep an ESV in the final ESV file (default=2).
 ## Two boolean parameters can be selected: run_swarm can be set as FALSE to save time if a SWARM output is already available.
-## And generate_ESV=TRUE (default) will use the DnoisE algorithm to produce an ASV table, along with the MOTU table.
+## And generate_ESV=TRUE (default) will use the DnoisE algorithm to produce an ESV table, along with the MOTU table.
 ## ODIN deprecates the previous owi_recount_swarm script used in old metabarcoding pipelines (e.g. Project Metabarpark 2015).
 ## By Owen S. Wangensteen
 
@@ -78,12 +78,12 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   id <- db.total$id
   numclust <- nrow(db.total)
 
-  if (generate_ASV) dir.create("MOTU_tsv", showWarnings = FALSE)
+  if (generate_ESV) dir.create("MOTU_tsv", showWarnings = FALSE)
   for (fila in 1:numclust){
     head <- id[fila]
     tails <- unlist(clusters[names(clusters)==head])
     db.reduced <- db[db$id %in% tails,]
-    if (generate_ASV) write.table(db.reduced,paste0("MOTU_tsv/",head),sep="\t",quote=F,row.names=F)
+    if (generate_ESV) write.table(db.reduced,paste0("MOTU_tsv/",head),sep="\t",quote=F,row.names=F)
     suma <- colSums(db.reduced[,substr(names(db.total),1,6)=="sample"])
     db.total[fila,substr(names(db.total),1,6)=="sample"] <- suma
     db.total$cluster_weight[fila] <- nrow(db.reduced)
@@ -94,7 +94,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   write.table(db.total[,c(1:(ncol(db.total)-3),(ncol(db.total)-1):ncol(db.total),(ncol(db.total)-2))],outfile,sep=";",quote=F,row.names=F)
   message("File ", outfile, " written")
   
-  if (generate_ASV) {
+  if (generate_ESV) {
     message("ODIN will generate now a list of ESVs for every non-singleton MOTU, using DnoisE.")
     sample_cols <- (1:ncol(db.total))[substr(names(db.total),1,6)=="sample"]
     start_samp <- sample_cols[1]
