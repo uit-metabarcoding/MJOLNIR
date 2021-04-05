@@ -64,7 +64,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   message("ODIN has created the file ",paste0(lib,"_non_singleton_motu_list.txt")," with the list of identifiers of non-singleton MOTUs.")
   
   # Read counts database and keep only the needed clusters
-  message("ODIN is reading the abundances database. This could take Him a while, since He has just one eye left, after all.")
+  message("ODIN is reading the abundance database. This could take Him a while, since He has just one eye left, after all.")
   db <- read.table(filetab,sep="\t",head=T)
   numseqs <- nrow(db)
   db$id <- gsub(";","",db$id)
