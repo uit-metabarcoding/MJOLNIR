@@ -71,7 +71,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads=2,run_swarm=TRUE,generate_ASV
   id <- db.total$id
   numclust <- nrow(db.total)
 
-  if (generate_ASV) dir.create(MOTU_tsv, showWarnings = FALSE)
+  if (generate_ASV) dir.create("MOTU_tsv", showWarnings = FALSE)
   for (fila in 1:numclust){
     head <- id[fila]
     tails <- unlist(clusters[names(clusters)==head])
