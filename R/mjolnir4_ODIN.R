@@ -111,8 +111,10 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
     for (i in 1:length(id)) {
       ESV_tables[[i]] <- read.table(paste0(id[i],"_Adcorr_denoised_ratio_d.csv"),sep=",",head=T)
       ESV_tables[[i]]$definition <- id[i]
+      ESV_tables[[i]] <- ESV_tables[[i]][ESV_tables[[i]]$count>=min_reads_ESV,]
     }
-    ESV_table <- rbind(ESV_tables)
+    ESV_table <- ESV_tables[[1]]
+    for (i in 2:length(id)) ESV_table <- rbind(ESV_table,ESV_tables[[i]])
     write.table(ESV_table,outfile_ESV,sep=";",quote=F,row.names=F)
     message("File ", outfile_ESV, " written with ",nrow(ESV_table)," ESVs in ",length(id), " MOTUs")
   }
