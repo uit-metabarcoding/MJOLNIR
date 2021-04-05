@@ -99,6 +99,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
     sample_cols <- (1:ncol(db.total))[substr(names(db.total),1,6)=="sample"]
     start_samp <- sample_cols[1]
     end_samp <- sample_cols[length(sample_cols)]
+    suppressPackageStartupMessages(library(parallel))
     clust <- makeCluster(cores)
     X <- NULL
     for (motu in id) X <- c(X,paste0("python3 ",dnoise_path," -i MOTU_tsv/",motu," -o ",motu," -f F -F F -s ",start_samp," -z ",end_samp," -n 'count' -p 1 -y T"))
