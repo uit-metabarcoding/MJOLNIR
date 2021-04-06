@@ -14,7 +14,7 @@
 
 mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_swarm=TRUE,generate_ESV=TRUE){
   # Minimum MOTU abundance to be kept in the output file can be selected. It is 2 by default.
-  dnoise_path <- "~/DnoisE/src/DnoisE.py"
+  dnoise_path <- "~/DnoisE/DnoisE" # Change this to where the Dnoise executable is
   if (run_swarm){
     message("ODIN will cluster sequences into MOTUs with SWARM.")
     system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
@@ -102,7 +102,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
     suppressPackageStartupMessages(library(parallel))
     clust <- makeCluster(cores)
     X <- NULL
-    for (motu in id) X <- c(X,paste0("python3 ",dnoise_path," -i MOTU_tsv/",motu," -o ",motu," -f F -F F -s ",start_samp," -z ",end_samp," -n 'count' -p 1 -y T"))
+    for (motu in id) X <- c(X,paste0(dnoise_path," -i MOTU_tsv/",motu," -o ",motu," -f F -F F -s ",start_samp," -z ",end_samp," -n 'count' -p 1 -y T"))
     clusterExport(clust, "X",envir = environment())
     parLapply(clust,X, function(x) system(x,intern=T,wait=T))
     stopCluster(clust)
