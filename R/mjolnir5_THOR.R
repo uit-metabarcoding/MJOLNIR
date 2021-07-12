@@ -3,7 +3,8 @@
 # After assignment with ecotag, higher taxa at ranks higher than order are added from custom CSV files.
 # THOR replaces owi_add_taxonomy
  
-mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath=""){
+mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag=T){
+  if run_ecotag{	
   message("THOR will split the seeds file into ",cores," fragments.")
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))	
@@ -19,11 +20,11 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath=""){
   clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
+  }
   message("THOR will add higher taxonomic ranks now.")
   filefasta <-paste0(lib,".ecotag.fasta")
   system(paste0("cat ",lib,".seeds.ecotag_??.fasta > ",filefasta),intern=T,wait=T)
   outfile <-paste0(filefasta,".annotated.csv")
-            
   # Here old owi_add_taxonomy starts
   suppressPackageStartupMessages(library("Biostrings"))
   length_id <- 14 # This is the total length of the MOTU IDs in filefasta. It can be changed if needed.
