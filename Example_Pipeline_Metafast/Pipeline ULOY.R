@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(mjolnir))
 R1_filenames <-c("ULO1_R1.fastq","ULO2_R1.fastq","ULO3_R1.fastq","ULO4_R1.fastq")
 
 # Define number of cores to be used in parallel. For best performance, the number of libraries to process x the number of cores should be less or equal 
-than the total cores available in the computing server. e.g.: here we will use 30 cores x 4 libraries = 120 cores
+# than the total cores available in the computing server. e.g.: here we will use 30 cores x 4 libraries = 120 cores
 cores <- 120
 
 # Input names of the individual libraries to be used. It should be a 4-character name, matching the information of the ngsfilter files
