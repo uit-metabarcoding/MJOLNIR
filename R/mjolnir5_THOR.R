@@ -4,7 +4,7 @@
 # THOR replaces owi_add_taxonomy
  
 mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag=T){
-  if run_ecotag{	
+  if (run_ecotag) {	
   message("THOR will split the seeds file into ",cores," fragments.")
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))	
