@@ -148,6 +148,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["phylum_name",2] <- "Ochrophyta"
       matrix.data["kingdom_name",2] <- "Stramenopiles"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
+      matrix.data["rank",2] <- "phylum"   
     }
    if (scientific_name %in% c("Cymbellales")) {
       matrix.data["class_name",2] <- "Bacillariophyceae"
