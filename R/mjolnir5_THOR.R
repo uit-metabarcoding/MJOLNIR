@@ -67,7 +67,10 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
 		  "Lecanoromycetidae","Labyrinthulomycetes","Hydracarina","Gregarinasina","Dactylopodida","Cymbellales","eudicotyledons",
 		  "Pucciniomycotina","Taphrinomycotina","Dorylaimia","Teleostei","Stichotrichia","Peritrichia","Oligotrichia",
 		  "Choreotrichia","Ciliophora","Cryptophyta","Trichostomatia","Seriata","Tunicata","Tubulinida","Paraneoptera","saccharomyceta",
-		  "Euphyllophyta"
+		  "Euphyllophyta","Coscinodiscophycidae","Corallinophycidae","Biddulphiophycidae","Bdelloidea","Acanthomorphata","Leotiomycetes incertae sedis",
+		  "Ctenosquamata","Euteleosteomorpha","Heteroscleromorpha","Hexanauplia","Imparidentia","Neoloricata","Ochrophyta","Prymnesiophyceae",
+		  "Rhodymeniophycidae","Sedentaria","Sar","Nemaliophycidae","Heteroconchia","Euheterodonta","Palaeoheterodonta",
+		  "Picobiliphyte sp. MS584-11","beta proteobacterium CB","Chrysophyceae sp."
   )
 
   fix_exceptions <- function(scientific_name){
@@ -89,7 +92,12 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Viridiplantae"
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
     }
-
+   if (scientific_name %in% c("beta proteobacterium CB")) {
+      matrix.data["class_name",2] <- "Betaproteobacteria"
+      matrix.data["phylum_name",2] <- "Proteobacteria"
+      matrix.data["kingdom_name",2] <- "Bacteria"
+      matrix.data["superkingdom_name",2] <- "Prokaryota"
+    }
    if (scientific_name %in% c("Stichotrichia","Peritrichia","Oligotrichia","Choreotrichia","Ciliophora","Trichostomatia")) {
       matrix.data["class_name",2] <- "None"
       matrix.data["phylum_name",2] <- "Ciliophora"
@@ -109,19 +117,58 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Hacrobia"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
+   if (scientific_name %in% c("Sar")) {
+      matrix.data["superkingdom_name",2] <- "Chromalveolata"
+    }
    if (scientific_name %in% c("Cryptophyta")) {
       matrix.data["class_name",2] <- "None"
       matrix.data["phylum_name",2] <- "Cryptophyta"
       matrix.data["kingdom_name",2] <- "Hacrobia"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-
+   if (scientific_name %in% c("Prymnesiophyceae")) {
+      matrix.data["class_name",2] <- "Prymnesiophyceae"
+      matrix.data["phylum_name",2] <- "Haptophyta"
+      matrix.data["kingdom_name",2] <- "Hacrobia"
+      matrix.data["superkingdom_name",2] <- "Chromalveolata"
+    }
+   if (scientific_name %in% c("Picobiliphyte sp. MS584-11")) {
+      matrix.data["class_name",2] <- "Picomonadea"
+      matrix.data["phylum_name",2] <- "Picozoa"
+      matrix.data["kingdom_name",2] <- "Hacrobia"
+      matrix.data["superkingdom_name",2] <- "Chromalveolata"
+    }  
+   if (scientific_name %in% c("Chrysophyceae sp.")) {
+      matrix.data["class_name",2] <- "Chrysophyceae"
+      matrix.data["phylum_name",2] <- "Ochrophyta"
+      matrix.data["kingdom_name",2] <- "Stramenopiles"
+      matrix.data["superkingdom_name",2] <- "Chromalveolata"
+    }
+   if (scientific_name %in% c("Ochrophyta")) {
+      matrix.data["phylum_name",2] <- "Ochrophyta"
+      matrix.data["kingdom_name",2] <- "Stramenopiles"
+      matrix.data["superkingdom_name",2] <- "Chromalveolata"
+    }
    if (scientific_name %in% c("Cymbellales")) {
       matrix.data["class_name",2] <- "Bacillariophyceae"
       matrix.data["phylum_name",2] <- "Bacillariophyta"
       matrix.data["kingdom_name",2] <- "Stramenopiles"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
+    if (scientific_name %in% c("Coscinodiscophycidae")) {
+      matrix.data["class_name",2] <- "Coscinodiscophyceae"
+      matrix.data["phylum_name",2] <- "Bacillariophyta"
+      matrix.data["kingdom_name",2] <- "Stramenopiles"
+      matrix.data["superkingdom_name",2] <- "Chromalveolata"
+    }
+
+    if (scientific_name %in% c("Biddulphiophycidae")) {
+      matrix.data["class_name",2] <- "Mediophyceae"
+      matrix.data["phylum_name",2] <- "Bacillariophyta"
+      matrix.data["kingdom_name",2] <- "Stramenopiles"
+      matrix.data["superkingdom_name",2] <- "Chromalveolata"
+    }
+	  	  
    if (scientific_name %in% c("Enoplia","Dorylaimia")) {
       matrix.data["class_name",2] <- "Enoplea"
       matrix.data["phylum_name",2] <- "Nematoda"
@@ -236,6 +283,12 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Alveolata"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
+    if (scientific_name == "Heteroscleromorpha") {
+      matrix.data["class_name",2] <- "Demospongiae"
+      matrix.data["phylum_name",2] <- "Porifera"
+      matrix.data["kingdom_name",2] <- "Metazoa"
+      matrix.data["superkingdom_name",2] <- "Opisthokonta"
+    }
 
     if (scientific_name == "Palaeonemertea") {
       matrix.data["order_name",2] <- "Palaeonemertea"
@@ -255,6 +308,12 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
     if (scientific_name %in%  c("Sipuncula")) {
       matrix.data["class_name",2] <- "Sipuncula"
       matrix.data["phylum_name",2] <- "Annelida"
+      matrix.data["kingdom_name",2] <- "Metazoa"
+      matrix.data["superkingdom_name",2] <- "Opisthokonta"
+    }
+   if (scientific_name %in%  c("Bdelloidea")) {
+      matrix.data["class_name",2] <- "Eurotatoria"
+      matrix.data["phylum_name",2] <- "Rotifera"
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
@@ -336,7 +395,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("Scolecida","Aciculata","Palpata")) {
+    if (scientific_name %in% c("Scolecida","Aciculata","Palpata","Sedentaria")) {
       matrix.data["class_name",2] <- "Polychaeta"
       matrix.data["phylum_name",2] <- "Annelida"
       matrix.data["kingdom_name",2] <- "Metazoa"
@@ -380,6 +439,13 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
       matrix.data["rank",2] <- "phylum"
     }
+    if (scientific_name == "Corallinophycidae","Rhodymeniophycidae","Nemaliophycidae") {
+      matrix.data["class_name",2] <- "Florideophyceae"
+      matrix.data["phylum_name",2] <- "Rhodophyta"
+      matrix.data["kingdom_name",2] <- "Rhodophyta"
+      matrix.data["superkingdom_name",2] <- "Archaeplastida"
+      matrix.data["rank",2] <- "phylum"
+    }
     if (scientific_name == "PX clade") {
       matrix.data["phylum_name",2] <- "Ochrophyta"
       matrix.data["kingdom_name",2] <- "Stramenopiles"
@@ -391,7 +457,8 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
       matrix.data["rank",2] <- "kingdom"
     }
-    if (scientific_name %in% c("Euteleostomi","Teleostei","Euteleosteomorpha","Actinopterygii","Clupeocephala","Eupercaria","Percomorphaceae","Euacanthomorphacea")) {
+    if (scientific_name %in% c("Euteleostomi","Teleostei","Euteleosteomorpha","Actinopterygii","Clupeocephala","Eupercaria","Percomorphaceae",
+			       "Acanthomorphata","Euacanthomorphacea","Ctenosquamata","Euteleosteomorpha")) {
       matrix.data["class_name",2] <- "Actinopterygii"
       matrix.data["phylum_name",2] <- "Chordata"
       matrix.data["kingdom_name",2] <- "Metazoa"
@@ -427,7 +494,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("Neocopepoda","Podoplea","Cirripedia","Thoracica")) {
+    if (scientific_name %in% c("Neocopepoda","Podoplea","Cirripedia","Thoracica","Hexanauplia")) {
       matrix.data["class_name",2] <- "Maxillopoda"
       matrix.data["phylum_name",2] <- "Arthropoda"
       matrix.data["kingdom_name",2] <- "Metazoa"
@@ -520,6 +587,12 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
+    if (scientific_name %in%  c("Neoloricata")) {
+      matrix.data["class_name",2] <- "Polyplacophora"
+      matrix.data["phylum_name",2] <- "Mollusca"
+      matrix.data["kingdom_name",2] <- "Metazoa"
+      matrix.data["superkingdom_name",2] <- "Opisthokonta"
+    }
 
     if (scientific_name %in%  c("Cephalaspidea")) {
       matrix.data["order_name",2] <- "Cephalaspidea"
@@ -528,7 +601,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in%  c("Pteriomorphia")) {
+    if (scientific_name %in%  c("Pteriomorphia","Imparidentia","Heteroconchia","Euheterodonta","Palaeoheterodonta")) {
       matrix.data["class_name",2] <- "Bivalvia"
       matrix.data["phylum_name",2] <- "Mollusca"
       matrix.data["kingdom_name",2] <- "Metazoa"
@@ -593,7 +666,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["kingdom_name",2] <- "Fungi"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("leotiomyceta","Leotiomycetidae")) {
+    if (scientific_name %in% c("leotiomyceta","Leotiomycetidae","Leotiomycetes incertae sedis")) {
       matrix.data["class_name",2] <- "Leotiomycetes"
       matrix.data["phylum_name",2] <- "Ascomycota"
       matrix.data["kingdom_name",2] <- "Fungi"
