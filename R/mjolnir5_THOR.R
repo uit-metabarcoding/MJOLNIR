@@ -440,7 +440,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
       matrix.data["rank",2] <- "phylum"
     }
-    if (scientific_name == "Corallinophycidae","Rhodymeniophycidae","Nemaliophycidae") {
+    if (scientific_name %in% c("Corallinophycidae","Rhodymeniophycidae","Nemaliophycidae")) {
       matrix.data["class_name",2] <- "Florideophyceae"
       matrix.data["phylum_name",2] <- "Rhodophyta"
       matrix.data["kingdom_name",2] <- "Rhodophyta"
