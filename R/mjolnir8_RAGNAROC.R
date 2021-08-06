@@ -44,12 +44,12 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
         if (remove_contamination){
         message("RAGNAROC is removing contaminant MOTUs now.")
         contamination <- readLines(contamination_file)
-        db_new <- db_new[(!(db$scientific_name %in% contamination) &
-                         !(db$phylum_name %in% contamination) &
-                         !(db$class_name %in% contamination) &
-                         !(db$order_name %in% contamination) &
-                         !(db$family_name %in% contamination) &
-                         !(db$genus_name %in% contamination)) ,]
+              db_new <- db_new[!((db$scientific_name %in% contamination) |
+                      (db$phylum_name %in% contamination) |
+                      (db$class_name %in% contamination) |
+                      (db$order_name %in% contamination) |
+                      (db$family_name %in% contamination) |
+                      (db$genus_name %in% contamination)) ,]       
         }
     # Order by taxonomy
         if (sort_MOTUs == "taxonomy"){
