@@ -26,6 +26,7 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",min_reads=2,min_re
         if (sum(empty_samples)>0) for (i in 1:sum(empty_samples)) new_sample_names[empty_samples][i] <- paste0("EMPTY",i)
         for (i in 1:length(sample_cols)) names(db)[names(db)==sample_names[i]] <- new_sample_names[i]
     # Apply relative abundance filter per sample
+        message("RAGNAROC is applying a relative abundance filter. MOTUs with less than ",min_relative," relative abundance will be removed from each sample.")
         for (col in sample_cols) {
             tot_reads <- sum(db[,col])
             min_reads_samp <- ceiling(min_relative*tot_reads)
@@ -40,6 +41,7 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",min_reads=2,min_re
     # Replace total_reads
         db_new$total_reads <- new_total_reads
     # Remove MOTUs with new total_reads less than or equal than min_reads
+        message("RAGNAROC is removing MOTUs with less than ",min_reads," total reads.")
         db_new <- db_new[db_new$total_reads >= min_reads,]
     # Remove bacteria
         if (remove_bacteria) {
