@@ -36,10 +36,14 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
     # Remove MOTUs with new total-reads==0
         db_new <- db_new[db_new$total_reads>0,]
     # Remove bacteria
-        if (remove_bacteria) db_new <- db_new[(db_new$superkingdom_name != "Prokaryota" & db_new$scientific_name != "root"),]
+        if (remove_bacteria) {
+            message("RAGNAROC is removing bacterial MOTUs now.")
+            db_new <- db_new[(db_new$superkingdom_name != "Prokaryota" & db_new$scientific_name != "root"),]
+            }
     # Remove contamination
         if (remove_contamination){
-        contamination <- readLines("contamination_file.txt")
+        message("RAGNAROC is removing contaminant MOTUs now.")
+        contamination <- readLines(contamination_file)
         db_new <- db_new[(!(db$scientific_name %in% contamination) &
                          !(db$phylum_name %in% contamination) &
                          !(db$class_name %in% contamination) &
@@ -49,6 +53,7 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
         }
     # Order by taxonomy
         if (sort_MOTUs == "taxonomy"){
+        message("RAGNAROC is ordering MOTUs by taxonomy.")
         db_sort <- db_new[,substr(names(db_new),nchar(names(db_new))-4,nchar(names(db_new)))=="_name"]
         db_sort[db_sort==""] <- "ZZZZ"
         db_sort$abundance <- sum(db_new$total_reads) - db_new$total_reads
@@ -57,8 +62,10 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
         db_new <- db_new[order(sort_vector),]
     }
     # Order by abundance
-        if (sort_MOTUs == "abundance") db_new <- db_new[order(db_new$total_reads,decreasing = T),]
-
+        if (sort_MOTUs == "abundance") {
+            message("RAGNAROC is ordering MOTUs by abundance.")
+            db_new <- db_new[order(db_new$total_reads,decreasing = T),]
+    }
     # Write final table
         if (output_file=="") output_file <- paste0(lib,".final_dataset.csv") 
         write.table(db_new,output_file,row.names = F,sep=";",quote = F)
