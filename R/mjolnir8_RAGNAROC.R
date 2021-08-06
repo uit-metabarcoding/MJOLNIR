@@ -1,8 +1,13 @@
 # RAGNAROC: Replace AGnomens with Names And Recover Original Codification
+# Sort_MOTUs options available: "id" (default), "taxonomy", "abundance"
+# To remove bacterial MOTUs use remove_bacteria = T
+# To remove contaminant MOTUs use remove_contamination = T. 
+# When remove_contamination = T a list of contaminants must be provided in contamination_file (a text file with one line for each contaminant scientific_name)
 
 
-mjolnir8_RAGNAROC <- function(lib,sample_table,output_file){
+mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
     message("RAGNAROC is coming. Original sample names will be recovered.")
+    if (output_file == "") output_file <- paste0(lib,"_final_dataset.csv")
     #Load the dataset
         # If LULU file exists, load it, otherwise load the All_MOTUs file
         file_to_load <- ifelse(file.exists(paste0(lib,".Curated_LULU.csv")),paste0(lib,".Curated_LULU.csv"),paste0(lib,".All_MOTUs.csv"))
@@ -30,6 +35,24 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file){
         db_new$total_reads <- new_total_reads
     # Remove MOTUs with new total-reads==0
         db_new <- db_new[db_new$total_reads>0,]
+    # Remove bacteria
+        if (remove_bacteria) db_new <- db_new[(db_new$superkingdom_name != "Prokaryota" & db_new$scientific_name != "root"),]
+    # Remove contamination
+        if (remove_contamination){
+        contamination <- readLines("contamination_file.txt")
+        db_new <- db_new[!(db$scientific_name %in% contamination),]
+        }
+    # if (sort_MOTUs == "taxonomy"){
+        db_sort <- db_new[,substr(names(db_new),nchar(names(db_new))-4,nchar(names(db_new)))=="_name"]
+        db_sort[db_sort==""] <- "ZZZZ"
+        db_sort$abundance <- sum(db_new$total_reads) - db_new$total_reads
+        sort_vector <- paste(db_sort$superkingdom_name,db_sort$kingdom_name,db_sort$phylum_name,db_sort$class_name,db_sort$order_name,
+                     db_sort$family_name,db_sort$genus_name,db_sort$species_name,db_sort$scientific_name,db_sort$abundance)
+        db_new <- db_new[order(sort_vector),]
+    }
+    # if (sort_MOTUs == "abundance"){
+        db_new <- db_new[order(db_new$total_reads,decreasing = T),]
+    }
     # Write final table
         if (output_file=="") output_file <- paste0(lib,".final_dataset.csv") 
         write.table(db_new,output_file,row.names = F,sep=";",quote = F)
