@@ -42,7 +42,8 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
         contamination <- readLines("contamination_file.txt")
         db_new <- db_new[!(db$scientific_name %in% contamination),]
         }
-    # if (sort_MOTUs == "taxonomy"){
+    # Order by taxonomy
+        if (sort_MOTUs == "taxonomy"){
         db_sort <- db_new[,substr(names(db_new),nchar(names(db_new))-4,nchar(names(db_new)))=="_name"]
         db_sort[db_sort==""] <- "ZZZZ"
         db_sort$abundance <- sum(db_new$total_reads) - db_new$total_reads
@@ -50,9 +51,9 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
                      db_sort$family_name,db_sort$genus_name,db_sort$species_name,db_sort$scientific_name,db_sort$abundance)
         db_new <- db_new[order(sort_vector),]
     }
-    # if (sort_MOTUs == "abundance"){
-        db_new <- db_new[order(db_new$total_reads,decreasing = T),]
-    }
+    # Order by abundance
+        if (sort_MOTUs == "abundance") db_new <- db_new[order(db_new$total_reads,decreasing = T),]
+
     # Write final table
         if (output_file=="") output_file <- paste0(lib,".final_dataset.csv") 
         write.table(db_new,output_file,row.names = F,sep=";",quote = F)
