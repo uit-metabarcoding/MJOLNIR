@@ -5,7 +5,7 @@
 # When remove_contamination = T a list of contaminants must be provided in contamination_file (a text file with one line for each contaminant scientific_name)
 
 
-mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
+mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",min_reads=2,min_relative=1/50000,sort_MOTUs="id",remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
     message("RAGNAROC is coming. Original sample names will be recovered.")
     if (output_file == "") output_file <- paste0(lib,"_final_dataset.csv")
     #Load the dataset
@@ -25,6 +25,12 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
         empty_samples <- new_sample_names==""
         if (sum(empty_samples)>0) for (i in 1:sum(empty_samples)) new_sample_names[empty_samples][i] <- paste0("EMPTY",i)
         for (i in 1:length(sample_cols)) names(db)[names(db)==sample_names[i]] <- new_sample_names[i]
+    # Apply relative abundance filter per sample
+        for (col in sample_cols) {
+            tot_reads <- sum(db[,col])
+            min_reads_samp <- ceiling(min_relative*tot_reads)
+            db[,col][db[,col] < min_reads_samp] <- 0
+        }
     # Reorder sample columns
         db_sample_ordered <- db[,sort(names(db[,sample_cols]))]
         new_total_reads <- rowSums(db_sample_ordered[,substr(names(db_sample_ordered),1,5)!="EMPTY"])
@@ -33,8 +39,8 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",sort_MOTUs="id",re
         db_new <- db_new[,substr(names(db_new),1,5)!="EMPTY" & substr(names(db_new),(nchar(names(db_new))-1),nchar(names(db_new)))!=".1"]
     # Replace total_reads
         db_new$total_reads <- new_total_reads
-    # Remove MOTUs with new total-reads==0
-        db_new <- db_new[db_new$total_reads>0,]
+    # Remove MOTUs with new total_reads less than or equal than min_reads
+        db_new <- db_new[db_new$total_reads >= min_reads,]
     # Remove bacteria
         if (remove_bacteria) {
             message("RAGNAROC is removing bacterial MOTUs now.")
