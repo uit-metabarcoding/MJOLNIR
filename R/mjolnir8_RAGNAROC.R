@@ -35,7 +35,6 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",min_reads=2,min_re
     # Reorder sample columns
         db_sample <- db[,sample_cols]
         db_sample_ordered <- db_sample[,sort(names(db_sample))]
-        db_sample_ordered <- db[,sort(names(db[,sample_cols]))]
         new_total_reads <- rowSums(db_sample_ordered[,substr(names(db_sample_ordered),1,5)!="EMPTY"])
         db_new <- cbind(db[,no_sample_cols[-length(no_sample_cols)]],db_sample_ordered,sequence=db[,length(db)])
     # Remove empty and duplicated columns
