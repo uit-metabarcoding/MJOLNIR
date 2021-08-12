@@ -5,7 +5,9 @@
 
 <b>by Owen S. Wangensteen (UiT, The Arctic University of Norway)</b>
 
-MJOLNIR is an R package to run modular metabarcoding pipelines from the R environment. MJOLNIR runs on Linux and Mac systems. It is not clear to me if it might run in Windows 10 using the Ubuntu Linux subsystem. In any case, the extensive use of package parallel and several dependencies that are designed primarily for Linux systems (see below) makes the success of installations in Windows highly improbable. Users are welcome to try to install and run MJOLNIR on Windows Linux Subsystem, but I would not recommend that.
+MJOLNIR is a powerful tool to crush big amounts of raw metabarcoding data, and molding them into organized data sets of taxonomically assigned MOTUs. 
+
+MJOLNIR comes in an R package, so that modular metabarcoding pipelines are easy to run from the R environment. MJOLNIR runs on Linux and Mac systems. The extensive use of package parallel and several dependencies that are designed primarily for Linux systems (see below) makes the success of installations in Windows highly improbable. Users are welcome to try to install and run MJOLNIR on Windows Linux Subsystem, but I would not recommend that.
 
 MJOLNIR depends on the following dependencies, which must be installed in the system and properly working:
 
@@ -29,6 +31,9 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
       python2 setup.py install
       export PATH=${PATH}:"~/OBI/OBI-env/bin"
 
+  It is a good idea to permanently add the OBI-env directory to the path, so there is no need to activate the OBI environment everytime. To do so, you can edit the .bashrc file in your home folder with any text editor (such as nano or vim) and add the following line:
+      export PATH=$PATH:~/OBI/OBI-env/bin
+      
   Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the previous commands,  
 
 - VSEARCH (Rognes et al. 2016): 
