@@ -32,6 +32,7 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
       export PATH=${PATH}:"~/OBI/OBI-env/bin"
 
   It is a good idea to permanently add the OBI-env directory to the path, so there is no need to activate the OBI environment everytime. To do so, you can edit the .bashrc file in your home folder with any text editor (such as nano or vim) and add the following line:
+  
       export PATH=$PATH:~/OBI/OBI-env/bin
       
   Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the previous commands,  
