@@ -70,7 +70,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
 		  "Euphyllophyta","Coscinodiscophycidae","Corallinophycidae","Biddulphiophycidae","Bdelloidea","Acanthomorphata","Leotiomycetes incertae sedis",
 		  "Ctenosquamata","Euteleosteomorpha","Heteroscleromorpha","Hexanauplia","Imparidentia","Neoloricata","Ochrophyta","Prymnesiophyceae",
 		  "Rhodymeniophycidae","Sedentaria","Sar","Nemaliophycidae","Heteroconchia","Euheterodonta","Palaeoheterodonta",
-		  "Picobiliphyte sp. MS584-11","beta proteobacterium CB","Chrysophyceae sp."
+		  "Picobiliphyte sp. MS584-11","beta proteobacterium CB","Chrysophyceae sp.","Bacteria","uncultured bacterium","uncultured actinobacterium"
   )
 
   fix_exceptions <- function(scientific_name){
@@ -91,6 +91,10 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
       matrix.data["phylum_name",2] <- "Tracheophyta"
       matrix.data["kingdom_name",2] <- "Viridiplantae"
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
+    }
+   if (scientific_name %in% c("Bacteria","uncultured bacterium","uncultured actinobacterium")) {
+      matrix.data["kingdom_name",2] <- "Bacteria"
+      matrix.data["superkingdom_name",2] <- "Prokaryota"
     }
    if (scientific_name %in% c("beta proteobacterium CB")) {
       matrix.data["class_name",2] <- "Betaproteobacteria"
