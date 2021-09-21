@@ -45,6 +45,7 @@ mjolnir3_HELA <- function(libs,lib,cores,obipath=""){
   system(paste0("sed -i 's/size/ count/g' ",lib,".no_chimeras.fasta"),intern=T,wait=T)
   system(paste0("sed -i 's/;sample=/ sample=/g' ",lib,".no_chimeras.fasta"),intern=T,wait=T)
   # Add ; at the end of the headers in no_chimeras file
+  suppressPackageStartupMessages(library(Biostrings))
   file_nochim <- readDNAStringSet(paste0(lib,".no_chimeras.fasta"))
   file_nochim@ranges@NAMES <- paste0(file_nochim@ranges@NAMES,";")
   writeXStringSet(file_nochim,paste0(lib,".no_chimeras.fasta"))          
