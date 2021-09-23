@@ -1,11 +1,12 @@
 # FREYJA: Filtering of Reads, Enrollment, Yoke-reads Joining and Alignment  
 
+# FREYJA will use OBITools commands to merge paired-end reads, demultiplex libraries into samples (if needed),trim primer sequences, filter by length.
 # In case the data are already demultiplexed and consist of individual fastq files for each sample, use the option demultiplexed=TRUE.
 # When demultiplexed=TRUE, FREYJA will read the names of each individual R1 fastq files from a column in the LIBX_metadata.csv file, called fastq_name_R1
 # In the metadata table, each sample in the original_samples column must have a matching fastq_name_R1 and a matching mjolnir_agnomen (LIBX_sample_XXX).  
-# When demultiplexed=TRUE, you must specify the R1_motif and R2_motif strings in the options input to FREYJA. 
+# When demultiplexed=TRUE, you must also specify the R1_motif and R2_motif strings in the options input to FREYJA. 
 # When demultiplexed=TRUE, you must also specify the primer_F and primer_R sequences in the options input to FREYJA. COI Leray-XT primers are specified by default.
-# Otherwise, when demultiplexed=FALSE, the primers information must be already written in the LIBX_ngsfilter.tsv file.
+# Otherwise, when demultiplexed=FALSE, the primers information must be already written in the LIBX_ngsfilter.tsv files.
 
 mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
                             demultiplexed=F,primer_F="GGWACWRGWTGRACWNTNTAYCCYCC",primer_R="TANACYTCNGGRTGNCCRAARAAYCA",R1_motif="_R1",R2_motif="_R2",obipath=""){
