@@ -32,7 +32,7 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
       for (ag in agnomens) writeLines(paste(lib,ag,":",primer_F,primer_R,sep="\t"),paste0("ngsfilter_",ag,".tsv"))
       # Create obitool commands
       for (i in 1:length(agnomens)) {
-         X <- c(X,paste0("illuminapairedend -r ",gsub(R1_motif,R2_motif,fastqR1_list[i]), " ",fastqR1_list[i]," | obigrep -p \'score>40.00\' | ngsfilter -t ngsfilter_",agnomens[i],".tsv | obigrep -p \'seq_length>",Lmin,"\' -p \'seq_length<",Lmax,"\' -s \'^[ACGT]+$\' -p \'forward_tag!=None\' -p \'reverse_tag!=None\' --fasta-output > ",agnomens[i],".filtered_length_part_",sprintf("%02d",i),".fasta"))
+         X <- c(X,paste0("illuminapairedend -r ",gsub(R1_motif,R2_motif,fastqR1_list[i]), " ",fastqR1_list[i]," | obigrep -p \'score>40.00\' | ngsfilter -t ngsfilter_",agnomens[i],".tsv | obigrep -p \'seq_length>",Lmin,"\' -p \'seq_length<",Lmax,"\' -s \'^[ACGT]+$\' -p \'forward_tag!=None\' -p \'reverse_tag!=None\' --fasta-output > ",agnomens[i],".fasta"))
          libslist <- paste0(libslist,agnomens[i],".filtered_length_part_",sprintf("%02d",i),".fasta ")
       }
   }
@@ -40,8 +40,13 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
     clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
     parLapply(clust,X, function(x) system(x,intern=T,wait=T))
     stopCluster(clust)
-    message("FREYJA is joining filtered reads into a single file.")
-    system(paste0("cat ",libslist," > ",lib,".joined.fasta"),intern=T,wait=T)
-    message("File ",lib,".joined.fasta written.")
+    # If not demultiplexed, then join all parts into a joined file and then split it into samples
+    if (!demultiplexed){
+      message("FREYJA is joining filtered reads into a single file.")
+      system(paste0("cat ",libslist," > ",lib,".joined.fasta"),intern=T,wait=T)
+      message("File ",lib,".joined.fasta written.")
+      message("HELA will create individual files for each sample.")
+      system(paste0("obisplit -t sample ",lib,".joined.fasta"),intern=T,wait=T)
+    }
     message("FREYJA is done.")
 }
