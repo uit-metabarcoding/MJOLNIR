@@ -1,17 +1,13 @@
 # HELA: Hierarchical Elimination of Lurking Artifacts
 
 # This function uses the uchime_denovo algorithm implemented in VSEARCH to remove chimaeric sequences from the dataset.
-# It works in a sample-by-sample basis. So the whole dataset is first split into individual fasta files for each sample.
+# It works in a sample-by-sample basis. So the joined dataset is first split into individual fasta files for each sample.
 # This allows for parallel computing, significantly decreasing calculation times.  
 # The final dataset output is in VSEARCH format, so it can be directly fed into SWARM (ODIN).
 
-mjolnir3_HELA <- function(libs,lib,cores,obipath=""){
+mjolnir3_HELA <- function(lib,cores,obipath=""){
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
-  libslist <- NULL
-  for (prefix in libs) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
-  message("HELA is joining filtered reads into a single file.")
-  system(paste0("cat ",libslist," > ",lib,".joined.fasta"),intern=T,wait=T)
   message("HELA will calculate stats per sample.")
   system(paste0("obistat -c sample -a seq_length ",lib,".joined.fasta > sample_stats_",lib,".txt"))
   message("HELA will create individual files for each sample.")
