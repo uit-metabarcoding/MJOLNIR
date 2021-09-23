@@ -17,7 +17,7 @@ mjolnir2_FREYJA <- function(lib_prefix,cores,Lmin=299,Lmax=320,lib="",
   X <- NULL
   libslist <- NULL
 
-  if !(demultiplexed){
+  if (!demultiplexed){
     for (i in 1:cores) for (j in 1:length(lib_prefix)) {
       #if (cores<10) {formatted_i <- i} else {formatted_i <- sprintf("%02d",i)}
       formatted_i <- sprintf("%02d",i)
