@@ -7,7 +7,7 @@
 # When demultiplexed=TRUE, you must also specify the primer_F and primer_R sequences in the options input to FREYJA. COI Leray-XT primers are specified by default.
 # Otherwise, when demultiplexed=FALSE, the primers information must be already written in the LIBX_ngsfilter.tsv file.
 
-mjolnir2_FREYJA <- function(lib_prefix,cores,Lmin=299,Lmax=320,lib="",
+mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
                             demultiplexed=F,primer_F="GGWACWRGWTGRACWNTNTAYCCYCC",primer_R="TANACYTCNGGRTGNCCRAARAAYCA",R1_motif="_R1",R2_motif="_R2",obipath=""){
   message("FREYJA will do paired-end alignment, demultiplexing and length filter.")  
   suppressPackageStartupMessages(library(parallel))
