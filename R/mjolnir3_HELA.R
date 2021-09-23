@@ -44,11 +44,16 @@ mjolnir3_HELA <- function(libs,lib,cores,obipath=""){
   message("File ",lib,".no_chimeras.fasta written.")
   system(paste0("sed -i 's/size/ count/g' ",lib,".no_chimeras.fasta"),intern=T,wait=T)
   system(paste0("sed -i 's/;sample=/ sample=/g' ",lib,".no_chimeras.fasta"),intern=T,wait=T)
-  # Add ; at the end of the headers in no_chimeras file
-  suppressPackageStartupMessages(library(Biostrings))
-  file_nochim <- readDNAStringSet(paste0(lib,".no_chimeras.fasta"))
-  file_nochim@ranges@NAMES <- paste0(file_nochim@ranges@NAMES,";")
-  writeXStringSet(file_nochim,paste0(lib,".no_chimeras.fasta"))          
+  
+  # Check if the output of vsearch is in the right format. Otherwise, add ";" at the end of the headers in no_chimeras.fasta file
+  check_header <- readLines(paste0(lib,".no_chimeras.fasta"),1)
+  if (substr(check_header,nchar(check_header),nchar(check_header))!=";") {   
+    suppressPackageStartupMessages(library(Biostrings))
+    file_nochim <- readDNAStringSet(paste0(lib,".no_chimeras.fasta"))
+    file_nochim@ranges@NAMES <- paste0(file_nochim@ranges@NAMES,";")
+    writeXStringSet(file_nochim,paste0(lib,".no_chimeras.fasta"))       
+  }
+            
   system(paste0("obiuniq -m sample ",lib,".no_chimeras.fasta > ",lib,".unique.fasta"),intern=T,wait=T)
   message("HELA will change sequence identifiers to a short index")
   system(paste0("obiannotate --seq-rank ",lib,".unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,".new.fasta"),intern=T,wait=T)
