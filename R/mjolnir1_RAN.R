@@ -1,13 +1,8 @@
 # RAN: Reads Allotment in N portions
 # This function will prepare the FASTQ raw data for parallel processing.
-# In case the data consist of multiplexed libraries, it will split each of them into aliquote parts using obisplit, to be processed by FREYJA.
-# In case the data are already demultiplexed and consist of individual fastq files for each sample, use the option demultiplexed=TRUE.
-# Then RAN will create an ngsfilter per sample, and a list of commands for FREYJA to process individual fastq files.
-# When demultiplexed=TRUE, RAN will read the names of each individual R1 fastq files from a column in LIBX_metadata.csv file, called fastq_name_R1
-# In the metadata table, each sample in the original_samples column must have a matching fastq_name_R1 and a matching mjolnir_agnomen (LIBX_sample_XXX).  
+# RAN will be run only if your data consist of multiplexed libraries, which will be split into aliquote parts using obisplit, to be processed by FREYJA.
 
-mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="L1_1",R2_motif="L1_2",lib="",demultiplexed=F,obipath=""){
-  if (!demultiplexed) {
+mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="L1_1",R2_motif="L1_2",obipath=""){
     message(paste0("RAN will split initial FASTQ files in ",cores," fragments each."))
     filelist <- NULL
     outfilelist <- NULL
@@ -33,10 +28,4 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="L1_1"
     stopCluster(clust)
     for (file in outfilelist) for (j in 1:9) if (file.exists(paste0(file,"_",j,".fastq"))) system(paste0("mv ",file,"_",j,".fastq ",file,"_",sprintf("%02d",j),".fastq"))
     message("Splitting done.")
-  } else {
-    message(paste0("RAN has detected that your FASTQ files are already demultiplexed."))
-    message(paste0("So she will prepare the files to be processed by FREYJA using the information from the ",lib,".metadata.csv file."))
-
-    }
-}
-
+} 
