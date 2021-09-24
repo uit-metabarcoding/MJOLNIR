@@ -9,11 +9,11 @@ For this tutorial you will need the following files:
 We have four paired-end fastq files from the sequencer, each containing multiple samples with their particular combination of sample-tags.
 We will call each of this libraries with an individual identifier, consisting of as tring of four alphanumeric characters:
 "ULO1", "ULO2", "ULO3", "ULO4".
-Note that the original fastq names can be longer and more complicated. That's not a problem at all. A typical name of a file coming to you from the sequencer will look more like "ULO1_S10_L001_R1_001.fastq.gz" and so on. The names have been shorted for this example: 
-- ULO1_R1.fastq & ULO1_R2.fastq
-- ULO2_R1.fastq & ULO2_R2.fastq
-- ULO3_R1.fastq & ULO3_R2.fastq
-- ULO4_R1.fastq & ULO4_R2.fastq
+Note that the original fastq names can be longer and more complicated. That's not a problem at all. A typical name of a file coming to you from the sequencer will look more like "ULO1_S10_L001_R1_001.fastq.gz" and so on. The names have been shorted for this example. Note that MJOLNIR can use both compressed files (.fastq.gz) and uncompressed files (.fastq) and he will automatically detect the right format. 
+- ULO1_R1.fastq.gz & ULO1_R2.fastq.gz
+- ULO2_R1.fastq.gz & ULO2_R2.fastq.gz
+- ULO3_R1.fastq.gz & ULO3_R2.fastq.gz
+- ULO4_R1.fastq.gz & ULO4_R2.fastq.gz
 
 2. NGSFILTER TABLES
 
@@ -35,3 +35,7 @@ In addition, for the taxonomic assignment step usgin THOR, we will need a direct
 - A taxonomy database in ecoPCR-db format.
 - The three tables needed for assignment of higher ranks: order_complete.csv, family_to_order.csv, and genus_to_family.csv.
 See our DUFA repositories here: https://github.com/uit-metabarcoding/DUFA/tree/master/DUFA_COLR for more information.
+
+5. THE MJOLNIR PIPELINE
+
+This is an R script file, called mjolnir_ULOY.R in our example.
