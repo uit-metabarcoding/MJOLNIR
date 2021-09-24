@@ -8,7 +8,7 @@
 mjolnir3_HELA <- function(lib,cores,obipath=""){
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
-  sample_list <- list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fasta$")
+  sample_list <- gsub(".fasta","",list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fasta$"))
   message("HELA will group unique sequences in every sample")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
