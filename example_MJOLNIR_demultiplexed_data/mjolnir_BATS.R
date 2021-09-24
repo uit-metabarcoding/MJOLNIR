@@ -30,4 +30,4 @@ mjolnir6_FRIGGA(lib)
 mjolnir7_LOKI(lib, min_id=.84)
 
 # RAGNAROC will change the names of the samples to recover the original names and will remove unnecessary columns
-mjolnir8_RAGNAROC(lib, "BATS_metadata.csv", "BATS_final_dataset.csv", sort_MOTUs="taxonomy", remove_bacteria=T, remove_contamination=F, min_reads=3)
+mjolnir8_RAGNAROC(lib, "BATS_metadata.tsv", "BATS_final_dataset.csv", sort_MOTUs="taxonomy", remove_bacteria=T, remove_contamination=F, min_reads=3)
