@@ -43,5 +43,5 @@ mjolnir6_FRIGGA(lib)
 mjolnir7_LOKI(lib,min_id=.84)
 
 # RAGNAROC will change the names of the samples to recover the original names and will remove unnecessary columns
-mjolnir8_RAGNAROC(lib,"ULOY_metadata.csv")
+mjolnir8_RAGNAROC(lib,"ULOY_metadata.tsv")
 
