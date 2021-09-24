@@ -88,7 +88,7 @@ The following settings are recommended for 16S Bacterial F515/R806 primers (Capo
 
 This is a simplified scheme of the MJOLNIR workflow:
 
-![MJOLNIR WORKFLOW](https://github.com/uit-metabarcoding/MJOLNIR/blob/main/MJOLNIR_workflow.png)
+![MJOLNIR WORKFLOW](https://github.com/uit-metabarcoding/MJOLNIR/blob/main/MJOLNIR_workflow_V1.png)
 
 <B>0. Input data</B>
 
