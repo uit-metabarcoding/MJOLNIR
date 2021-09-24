@@ -7,7 +7,6 @@ For this tutorial you will need the following files:
 1. RAW SEQUENCING DATA
 
 We have ten paired-end fastq files for ten samples, that we got already demultiplexed from the sequencer. The names can be whatever. But they must have a common format for the R1 and R2 motifs (e.g. "_R1." and "_R2.".
-"ULO1", "ULO2", "ULO3", "ULO4".
 -
 -
 -
