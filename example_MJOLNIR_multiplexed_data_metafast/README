@@ -26,7 +26,7 @@ The library identifier is a string of four alphanumeric character (example: "LIB
 
 3. THE METADATA FILE
 
-We need to prepare a metadata file that will be needed just for the last step of MJOLNIR (RAGNAROC). It is a CSV file (using semicolons (";") as separator character. It must contain at least two columns named "mjolnir_agnomens" and "original_samples". The rest of the metadata columns are optional. You can include any metadata describing your set of sample. RAGNAROC will use this information to recover the original names of the samples for the final dataset.
+We need to prepare a metadata file that will be needed just for the last step of MJOLNIR (RAGNAROC). It is a TSV file (using tabs ("\t") as separator character. It must contain at least two columns named "mjolnir_agnomens" and "original_samples". The rest of the metadata columns are optional. You can include any metadata describing your set of sample. RAGNAROC will use this information to recover the original names of the samples for the final dataset.
 
 4. TAXONOMIC INFORMATION
 
