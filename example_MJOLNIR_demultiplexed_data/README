@@ -6,24 +6,28 @@ For this tutorial you will need the following files:
 
 1. RAW SEQUENCING DATA
 
-We have ten paired-end fastq files for ten samples, that we got already demultiplexed from the sequencer. The names can be whatever. But they must have a common format for the R1 and R2 motifs (e.g. "_R1." and "_R2.".
--
--
--
--
--
--
--
--
--
--
+We have ten paired-end fastq files for ten bats poo samples, taken after the Great Annual Transylvania Party Dinner. 
+Those files have been already demultiplexed by the Illumina sequencer. The file names can have whatever format. But they must have a common format for the R1 and R2 motifs (e.g. "_R1." and "_R2.".
+
+- Bartok_R1.fastq & Bartok_R2.fastq
+- Von_Count_R1.fastq & Von_Count_R2.fastq
+- Duckula_R1.fastq & Duckula_R2.fastq
+- Anishinabe_R1.fastq & Anishinabe_R2.fastq
+- Camazotz_R1.fastq & Camazotz_R2.fastq
+- Chocula_R1.fastq & Chocula_R2.fastq
+- Orlok_R1.fastq & Orlok_R2.fastq
+- Vampirella_R1.fastq & Vampirella_R2.fastq
+- Whiskers_R1.fastq & Whiskers_R2.fastq
+- Barnabas_R1.fastq & Barnabas_R2.fastq
 
 2. THE METADATA FILE
 
-When we have demultiplexed sample files, we do not need to use a ngsfilter table file. But we need to provide the information in the metadata file. We have to create a column called "fastq_name_R1" with the names of the R1 fastq files for each sample, along with the  "mjolnir_agnomens" and "original_samples" columns.
-The metadata is a CSV file (using semicolons (";") as separator character. It must contain at least the mentioned three columns. The rest of the metadata columns are optional. You can include any metadata describing your set of sample. RAGNAROC will use this information to recover the original names of the samples for the final dataset.
+When we have demultiplexed sample files, we do not need to use a ngsfilter table file (as we do for multiplexed Metafast libraries). But we need to provide the sample information in the metadata file. We have to create a column called "fastq_name_R1" with the names of the R1 fastq files for each sample, along with their "mjolnir_agnomens" and "original_samples" columns.
+The metadata is a CSV file (using semicolons (";") as separator character. It must contain at least the mentioned three columns. Note that you need to provide agnomens with the format LIBX_sample_XXX, where LIBX must match the lib attribute given to the MJOLNIR R functions.
+RAGNAROC will also use this information to recover the original names from the "original_samples" column for the final dataset.
+The rest of the metadata columns are optional. You can include any metadata describing your set of sample. 
 
-4. TAXONOMIC INFORMATION
+3. TAXONOMIC INFORMATION
 
 In addition, for the taxonomic assignment step usgin THOR, we will need a directory containing all the taxonomic information needed. You will need:
 - A reference database for your metabarcoding fragment in fasta format.
@@ -31,6 +35,6 @@ In addition, for the taxonomic assignment step usgin THOR, we will need a direct
 - The three tables needed for assignment of higher ranks: order_complete.csv, family_to_order.csv, and genus_to_family.csv.
 See our DUFA repositories here: https://github.com/uit-metabarcoding/DUFA/tree/master/DUFA_COLR for more information.
 
-5. THE MJOLNIR PIPELINE
+4. THE MJOLNIR PIPELINE
 
 This is an R script file, called mjolnir_BATS.R in our example.
