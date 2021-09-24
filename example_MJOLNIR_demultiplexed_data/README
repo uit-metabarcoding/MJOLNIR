@@ -6,7 +6,7 @@ For this tutorial you will need the following files:
 
 1. RAW SEQUENCING DATA
 
-We have ten paired-end fastq files for ten bats poo samples, taken after the Great Annual Transylvania Party Dinner. 
+We have ten paired-end fastq files for ten bats poop samples, taken after the Great Annual Transylvania Party Dinner. 
 Those files have been already demultiplexed by the Illumina sequencer. The file names can have whatever format. But they must have a common format for the R1 and R2 motifs (e.g. "_R1." and "_R2.".
 
 - Bartok_R1.fastq & Bartok_R2.fastq
