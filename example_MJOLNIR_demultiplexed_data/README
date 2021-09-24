@@ -29,7 +29,7 @@ The rest of the metadata columns are optional. You can include any metadata desc
 
 3. TAXONOMIC INFORMATION
 
-In addition, for the taxonomic assignment step usgin THOR, we will need a directory containing all the taxonomic information needed. You will need:
+In addition, for the taxonomic assignment step using THOR, we will need a directory containing all the taxonomic information needed. You will need:
 - A reference database for your metabarcoding fragment in fasta format.
 - A taxonomy database in ecoPCR-db format.
 - The three tables needed for assignment of higher ranks: order_complete.csv, family_to_order.csv, and genus_to_family.csv.
