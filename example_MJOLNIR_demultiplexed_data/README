@@ -1,1 +1,37 @@
+Tutorial MJOLNIR using demultiplexed raw data - BATS
 
+In this example, we will run MJOLNIR with a set of fastq files, each containing an individual sample (already demultiplexed by Illumina using library tags).
+
+For this tutorial you will need the following files:
+
+1. RAW SEQUENCING DATA
+
+We have ten paired-end fastq files for ten samples, that we got already demultiplexed from the sequencer. The names can be whatever. But they must have a common format for the R1 and R2 motifs (e.g. "_R1." and "_R2.".
+"ULO1", "ULO2", "ULO3", "ULO4".
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+
+2. THE METADATA FILE
+
+When we have demultiplexed sample files, we do not need to use a ngsfilter table file. But we need to provide the information in the metadata file. We have to create a column called "fastq_name_R1" with the names of the R1 fastq files for each sample, along with the  "mjolnir_agnomens" and "original_samples" columns.
+The metadata is a CSV file (using semicolons (";") as separator character. It must contain at least the mentioned three columns. The rest of the metadata columns are optional. You can include any metadata describing your set of sample. RAGNAROC will use this information to recover the original names of the samples for the final dataset.
+
+4. TAXONOMIC INFORMATION
+
+In addition, for the taxonomic assignment step usgin THOR, we will need a directory containing all the taxonomic information needed. You will need:
+- A reference database for your metabarcoding fragment in fasta format.
+- A taxonomy database in ecoPCR-db format.
+- The three tables needed for assignment of higher ranks: order_complete.csv, family_to_order.csv, and genus_to_family.csv.
+See our DUFA repositories here: https://github.com/uit-metabarcoding/DUFA/tree/master/DUFA_COLR for more information.
+
+5. THE MJOLNIR PIPELINE
+
+This is an R script file, called mjolnir_BATS.R in our example.
