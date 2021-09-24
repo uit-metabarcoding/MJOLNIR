@@ -5,7 +5,7 @@
 # When remove_contamination = T a list of contaminants must be provided in contamination_file (a text file with one line for each contaminant scientific_name)
 
 
-mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",min_reads=2,min_relative=1/50000,sort_MOTUs="id",remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
+mjolnir8_RAGNAROC <- function(lib,metadata_table="",output_file="",min_reads=2,min_relative=1/50000,sort_MOTUs="id",remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
     message("RAGNAROC is coming. Original sample names will be recovered.")
     if (output_file == "") output_file <- paste0(lib,"_final_dataset.csv")
     #Load the dataset
@@ -16,8 +16,9 @@ mjolnir8_RAGNAROC <- function(lib,sample_table,output_file="",min_reads=2,min_re
         sample_cols <- (1:ncol(db))[tolower(substr(names(db),6,11))=="sample"]
         no_sample_cols <- (1:ncol(db))[tolower(substr(names(db),6,11))!="sample"]
         sample_names <- names(db[sample_cols])
-    # Load the sample_table
-        sample_db <- read.csv(sample_table,sep=";",head=T,stringsAsFactors = F)
+    # Load the metadata_table
+        if (metadata_table=="") metadata_table <- paste0(lib,"_metadata.tsv")
+        sample_db <- read.table(metadata_table,sep="\t",head=T,stringsAsFactors = F)
         new_sample_names <- rep("",length(sample_names))
     # Change agnomens by original names
         agnomens_true <- sample_names %in% sample_db$mjolnir_agnomens
