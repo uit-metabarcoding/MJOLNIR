@@ -2,7 +2,7 @@
 
 # FREYJA will use OBITools commands to merge paired-end reads, demultiplex libraries into samples (if needed),trim primer sequences, filter by length.
 # In case the data are already demultiplexed and consist of individual fastq files for each sample, use the option demultiplexed=TRUE.
-# When demultiplexed=TRUE, FREYJA will read the names of each individual R1 fastq files from a column in the LIBX_metadata.csv file, called fastq_name_R1
+# When demultiplexed=TRUE, FREYJA will read the names of each individual R1 fastq files from a column in the LIBX_metadata.tsv file, called fastq_name_R1
 # In the metadata table, each sample in the original_samples column must have a matching fastq_name_R1 and a matching mjolnir_agnomen (LIBX_sample_XXX).  
 # When demultiplexed=TRUE, you must also specify the R1_motif and R2_motif strings in the options input to FREYJA. 
 # When demultiplexed=TRUE, you must also specify the primer_F and primer_R sequences in the options input to FREYJA. COI Leray-XT primers are specified by default.
@@ -26,7 +26,7 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
     }  
     for (prefix in lib_prefix) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
   } else {
-      metadata <- read.csv2(paste0(lib,"_metadata.csv"))
+      metadata <- read.table(paste0(lib,"_metadata.tsv"),sep="\t",header=T)
       fastqR1_list <- metadata$fastq_name_R1
       agnomens <-  metadata$mjolnir_agnomens
       # Create ngsfilter files
