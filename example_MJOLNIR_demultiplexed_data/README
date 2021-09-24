@@ -23,7 +23,7 @@ Those files have been already demultiplexed by the Illumina sequencer. The file 
 2. THE METADATA FILE
 
 When we have demultiplexed sample files, we do not need to use a ngsfilter table file (as we do for multiplexed Metafast libraries). But we need to provide the sample information in the metadata file. We have to create a column called "fastq_name_R1" with the names of the R1 fastq files for each sample, along with their "mjolnir_agnomens" and "original_samples" columns.
-The metadata is a CSV file (using semicolons (";") as separator character. It must contain at least the mentioned three columns. Note that you need to provide agnomens with the format LIBX_sample_XXX, where LIBX must match the lib attribute given to the MJOLNIR R functions.
+The metadata is a TSV file (using tab separators("\t") as separator character. It must contain at least the mentioned three columns. Note that you need to provide agnomens with the format LIBX_sample_XXX, where LIBX must match the lib attribute given to the MJOLNIR R functions.
 RAGNAROC will also use this information to recover the original names from the "original_samples" column for the final dataset.
 The rest of the metadata columns are optional. You can include any metadata describing your set of sample. 
 
