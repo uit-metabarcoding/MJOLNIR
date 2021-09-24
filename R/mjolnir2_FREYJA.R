@@ -24,7 +24,7 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
       formatted_i <- sprintf("%02d",i)
       X <- c(X,paste0("illuminapairedend -r ",lib_prefix[j],"_R2_part_",formatted_i,".fastq ",lib_prefix[j],"_R1_part_",formatted_i,".fastq | obigrep -p \'score>40.00\' | ngsfilter -t ngsfilter_",lib_prefix[j],".tsv | obigrep -p \'seq_length>",Lmin,"\' -p \'seq_length<",Lmax,"\' -s \'^[ACGT]+$\' -p \'forward_tag!=None\' -p \'reverse_tag!=None\' --fasta-output > ",lib_prefix[j],".filtered_length_part_",sprintf("%02d",i),".fasta"))
     }  
-    for (prefix in libs) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
+    for (prefix in lib_prefix) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
   } else {
       metadata <- read.csv2(paste0(lib,"_metadata.csv"))
       fastqR1_list <- metadata$fastq_name_R1
