@@ -1,10 +1,11 @@
-<H1>Tutorial MJOLNIR using multiplexed libraries raw data - ULOY</H1>
+Tutorial MJOLNIR using multiplexed libraries raw data - ULOY
 
 In this example, we will run MJOLNIR with four libraries containing multiplexed samples.
 
 For this tutorial you will need the following files:
 
-<H2>Raw sequencing data</H2>
+1. RAW SEQUENCING DATA
+
 We have four paired-end fastq files from the sequencer, each containing multiple samples with their particular combination of sample-tags.
 We will call each of this libraries with an individual identifier, consisting of as tring of four alphanumeric characters:
 "ULO1", "ULO2", "ULO3", "ULO4".
@@ -14,7 +15,8 @@ Note that the original fastq names can be longer and more complicated. That's no
 - ULO3_R1.fastq & ULO3_R2.fastq
 - ULO4_R1.fastq & ULO4_R2.fastq
 
-<H2>ngsfilter tables</H2>
+2. NGSFILTER TABLES
+
 We need a ngsfilter table for each library containing the information. A ngsfilter table is a tab-separated values file, with five ordered columns: [1] library identifier, [2] sample agnomen, [3] sample-tags, [4] forward primer, and [5] reverse primer. 
 The library identifier is a string of four alphanumeric character (example: "LIBX"). The sample name must have the format LIBX_sample_XXX. The forward and reverse sample tags must be separated by a colon (":") and the primer sequences must follow the IUPAC codes. Use "N" for either inosines or fully-degenerated position.
 - ngsfilter_ULO1.tsv
@@ -22,10 +24,12 @@ The library identifier is a string of four alphanumeric character (example: "LIB
 - ngsfilter_ULO3.tsv
 - ngsfilter_ULO4.tsv
 
-<H2>The metadata file</H2>
-We need to prepare a metadata file that will be needed just for the last step of MJOLNIR (RAGNAROC). It is a CSV file (using semicolons (";") as separator character. It must contain at least two columns named "mjolnir_agnomens" and "original_samples". The rest of the metadata columns are optional. You can include any metadata describing your set of sample.
+3. THE METADATA FILE
 
-<H2>Taxonomic information</H2>
+We need to prepare a metadata file that will be needed just for the last step of MJOLNIR (RAGNAROC). It is a CSV file (using semicolons (";") as separator character. It must contain at least two columns named "mjolnir_agnomens" and "original_samples". The rest of the metadata columns are optional. You can include any metadata describing your set of sample. RAGNAROC will use this information to recover the original names of the samples for the final dataset.
+
+4. TAXONOMIC INFORMATION
+
 In addition, for the taxonomic assignment step usgin THOR, we will need a directory containing all the taxonomic information needed. You will need:
 - A reference database for your metabarcoding fragment in fasta format.
 - A taxonomy database in ecoPCR-db format.
