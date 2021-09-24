@@ -38,3 +38,7 @@ See our DUFA repositories here: https://github.com/uit-metabarcoding/DUFA/tree/m
 4. THE MJOLNIR PIPELINE
 
 This is an R script file, called mjolnir_BATS.R in our example.
+
+The main difference with the multiplexed library is that you do not need to call RAN. You can start directly with FREYJA, using the option "demultiplexed=TRUE". 
+FREYJA will look for the fastq R1 names in the LIBX_metadata.csv file.
+The information for the R1 and R2 motifs and the sequences of the primers need to be passed as options to FREYJA. The Leray-XT primer sequences do not need to be passed, since they are the default option. 
