@@ -12,7 +12,7 @@
 ## ODIN deprecates the previous owi_recount_swarm script used in old metabarcoding pipelines (e.g. Project Metabarpark 2015).
 ## By Owen S. Wangensteen
 
-mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_swarm=TRUE,generate_ESV=TRUE){
+mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_swarm=TRUE,generate_ESV=FALSE){
   # Minimum MOTU abundance to be kept in the output file can be selected. It is 2 by default.
   dnoise_path <- "~/DnoisE/DnoisE" # Change this to where the Dnoise executable is
   if (run_swarm){
