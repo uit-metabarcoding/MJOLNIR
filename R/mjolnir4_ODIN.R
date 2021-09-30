@@ -17,7 +17,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   dnoise_path <- "~/DnoisE/DnoisE" # Change this to where the Dnoise executable is
   if (run_swarm){
     message("ODIN will cluster sequences into MOTUs with SWARM.")
-    system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
+    system(paste0("swarm -d ",d," -f -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
     message("ODIN will recount abundances for every MOTU after Swarm.")
   }
   fileswarm=paste0(lib,".SWARM_output")
