@@ -19,13 +19,13 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
   if (run_swarm){
     message("ODIN will cluster sequences into MOTUs with SWARM.")
-    system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,".SWARM_output -s ",lib,".SWARM",d,"nc_stats -w ",lib,".SWARM_seeds.fasta ",lib,".vsearch.fasta"),intern=T,wait=T)
+    system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,"_SWARM_output -s ",lib,"_SWARM",d,"nc_stats -w ",lib,"_SWARM_seeds.fasta ",lib,"_vsearch.fasta"),intern=T,wait=T)
     message("ODIN will recount abundances for every MOTU after Swarm.")
   }
-  fileswarm=paste0(lib,".SWARM_output")
-  filetab=paste0(lib,".new.tab")
-  outfile <-paste(fileswarm,".counts.tsv",sep="")
-  outfile_ESV <-paste(fileswarm,".ESV.tsv",sep="")
+  fileswarm=paste0(lib,"_SWARM_output")
+  filetab=paste0(lib,"_new.tab")
+  outfile <-paste(fileswarm,"_counts.tsv",sep="")
+  outfile_ESV <-paste(fileswarm,"_ESV.tsv",sep="")
   
   get_swarm_size <- function(cadena="="){
     return(as.numeric(substr(cadena,gregexpr("=",cadena)[[1]][[1]]+1,nchar(cadena))))
@@ -122,7 +122,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   }
     
   message("ODIN is now removing singleton MOTUs from the fasta output file, to make THOR's work an easier task.")
-  system(paste0("sed -i 's/;size/ size/g' ",lib,".SWARM_seeds.fasta"),intern=T,wait=T)
-  system(paste0("obigrep -p 'size>1' ",lib,".SWARM_seeds.fasta > ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
+  system(paste0("sed -i 's/;size/ size/g' ",lib,"_SWARM_seeds.fasta"),intern=T,wait=T)
+  system(paste0("obigrep -p 'size>1' ",lib,"_SWARM_seeds.fasta > ",lib,"_seeds_nonsingleton.fasta"),intern=T,wait=T)
   message("ODIN is done.")
 }
