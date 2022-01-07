@@ -7,11 +7,11 @@
 
 mjolnir8_RAGNAROC <- function(lib,metadata_table="",output_file="",min_reads=2,min_relative=1/50000,sort_MOTUs="id",remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
     message("RAGNAROC is coming. Original sample names will be recovered.")
-    if (output_file == "") output_file <- paste0(lib,"_final_dataset.csv")
+    if (output_file == "") output_file <- paste0(lib,"_final_dataset.tsv")
     #Load the dataset
         # If LULU file exists, load it, otherwise load the All_MOTUs file
-        file_to_load <- ifelse(file.exists(paste0(lib,".Curated_LULU.csv")),paste0(lib,".Curated_LULU.csv"),paste0(lib,".All_MOTUs.csv"))
-        db <- read.csv(file_to_load,sep=";",head=T,stringsAsFactors = F)
+        file_to_load <- ifelse(file.exists(paste0(lib,".Curated_LULU.tsv")),paste0(lib,".Curated_LULU.tsv"),paste0(lib,".All_MOTUs.tsv"))
+        db <- read.table(file_to_load,sep="\t",head=T,stringsAsFactors = F)
     # Select sample abundance columns
         sample_cols <- (1:ncol(db))[tolower(substr(names(db),6,11))=="sample"]
         no_sample_cols <- (1:ncol(db))[tolower(substr(names(db),6,11))!="sample"]
@@ -77,7 +77,7 @@ mjolnir8_RAGNAROC <- function(lib,metadata_table="",output_file="",min_reads=2,m
             db_new <- db_new[order(db_new$total_reads,decreasing = T),]
     }
     # Write final table
-        if (output_file=="") output_file <- paste0(lib,".final_dataset.csv") 
-        write.table(db_new,output_file,row.names = F,sep=";",quote = F)
+        if (output_file=="") output_file <- paste0(lib,".final_dataset.tsv") 
+        write.table(db_new,output_file,row.names = F,sep="\t",quote = F)
         message("After RAGNAROC, MJOLNIR is done. File: ",output_file, " written with ",nrow(db_new), " MOTUs and ",sum(db_new$total_reads)," total reads.")
 }
