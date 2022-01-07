@@ -24,7 +24,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
   message("THOR will add higher taxonomic ranks now.")
   filefasta <-paste0(lib,".ecotag.fasta")
   system(paste0("cat ",lib,".seeds.ecotag_??.fasta > ",filefasta),intern=T,wait=T)
-  outfile <-paste0(filefasta,".annotated.csv")
+  outfile <-paste0(filefasta,".annotated.tsv")
   # Here old owi_add_taxonomy starts
   suppressPackageStartupMessages(library("Biostrings"))
   length_id <- 14 # This is the total length of the MOTU IDs in filefasta. It can be changed if needed.
@@ -58,7 +58,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
                   "Palaeonemertea","Euopisthobranchia","Euteleosteomorpha","Littorinimorpha","Littorinoidea","Fragilariophycidae","Mandibulata",
                   "Actinopterygii","Batoidea","Boreoeutheria","Cephalaspidea","Clitellata","Clupeocephala","Decapodiformes","Echinacea","Euechinoidea",
                   "Embryophyta","Eupercaria","Percomorphaceae","Ophiuridea","Patellogastropoda","Piroplasmida","Pteriomorphia","Synurophyceae",
-		  "Vetigastropoda","Cirripedia","Dikarya","Euacanthomorphacea","Galeoidea","Gnathostomata","Intramacronucleata","Neogastropoda",
+		  "Vetigastropoda","CirripFedia","Dikarya","Euacanthomorphacea","Galeoidea","Gnathostomata","Intramacronucleata","Neogastropoda",
 		  "Phascolosomatidea","Trachylinae","Hexapoda","Oligochaeta","Sacoglossa","Thoracica","Buccinoidea","Digenea",
 		  "Agaricomycetes incertae sedis","Agaricomycetidae","Agaricomycotina","Amniota","Amoebozoa","Anystina","Apusozoa","Armophorea",
 		  "Bryophyta","Centroheliozoa","Cercozoa","Enoplia","asterids","campanulids","lamiids","rosids","Magnoliophyta","Mesangiospermae",
@@ -813,6 +813,6 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
                                   "order_name","family_name","genus_name","species_name",
                                   "best_match","species_list","taxid","sequence")]
 
-  write.table(reordered_db.outt,outfile,row.names=F,col.names=T,sep=";",quote = FALSE)
+  write.table(reordered_db.outt,outfile,row.names=F,col.names=T,sep="\t",quote = FALSE)
   message("THOR is done. He wrote the output file ",outfile," with ",length(db), " assigned sequences.")
   }
