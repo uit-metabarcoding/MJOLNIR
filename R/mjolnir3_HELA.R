@@ -35,6 +35,8 @@ mjolnir3_HELA <- function(lib,cores,obipath=""){
   message("File ",lib,"_no_chimeras.fasta written.")
   system(paste0("sed -i 's/size/ count/g' ",lib,"_no_chimeras.fasta"),intern=T,wait=T)
   system(paste0("sed -i 's/;sample=/ sample=/g' ",lib,"_no_chimeras.fasta"),intern=T,wait=T)
+  system(paste0("sed -i 's/;;/;/g' ",lib,"_no_chimeras.fasta"),intern=T,wait=T)
+            
   
   # Check if the output of vsearch is in the right format. Otherwise, add ";" at the end of the headers in no_chimeras.fasta file
   check_header <- readLines(paste0(lib,"_no_chimeras.fasta"),1)
