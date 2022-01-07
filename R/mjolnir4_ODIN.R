@@ -22,8 +22,8 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   }
   fileswarm=paste0(lib,".SWARM_output")
   filetab=paste0(lib,".new.tab")
-  outfile <-paste(fileswarm,".counts.csv",sep="")
-  outfile_ESV <-paste(fileswarm,".ESV.csv",sep="")
+  outfile <-paste(fileswarm,".counts.tsv",sep="")
+  outfile_ESV <-paste(fileswarm,".ESV.tsv",sep="")
   
   get_swarm_size <- function(cadena="="){
     return(as.numeric(substr(cadena,gregexpr("=",cadena)[[1]][[1]]+1,nchar(cadena))))
@@ -91,7 +91,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   }
   db.total$total_reads <- rowSums(db.total[,substr(names(db.total),1,6)=="sample"])
   names(db.total[substr(names(db.total),1,6)=="sample"]) <- substr(names(db.total[substr(names(db.total),1,6)=="sample"]),8,nchar(names(db.total[substr(names(db.total),1,6)=="sample"])))
-  write.table(db.total[,c(1:(ncol(db.total)-3),(ncol(db.total)-1):ncol(db.total),(ncol(db.total)-2))],outfile,sep=";",quote=F,row.names=F)
+  write.table(db.total[,c(1:(ncol(db.total)-3),(ncol(db.total)-1):ncol(db.total),(ncol(db.total)-2))],outfile,sep="\t",quote=F,row.names=F)
   message("File ", outfile, " written")
   
   if (generate_ESV) {
@@ -115,7 +115,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
     }
     ESV_table <- ESV_tables[[1]]
     for (i in 2:length(id)) ESV_table <- rbind(ESV_table,ESV_tables[[i]])
-    write.table(ESV_table,outfile_ESV,sep=";",quote=F,row.names=F)
+    write.table(ESV_table,outfile_ESV,sep="\t",quote=F,row.names=F)
     message("File ", outfile_ESV, " written with ",nrow(ESV_table)," ESVs in ",length(id), " MOTUs")
   }
     
