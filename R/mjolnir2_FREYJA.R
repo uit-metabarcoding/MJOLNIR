@@ -23,9 +23,9 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
     for (i in 1:cores) for (j in 1:length(lib_prefix)) {
       #if (cores<10) {formatted_i <- i} else {formatted_i <- sprintf("%02d",i)}
       formatted_i <- sprintf("%02d",i)
-      X <- c(X,paste0("illuminapairedend -r ",lib_prefix[j],"_R2_part_",formatted_i,".fastq ",lib_prefix[j],"_R1_part_",formatted_i,".fastq | obigrep -p \'score>40.00\' | ngsfilter -t ngsfilter_",lib_prefix[j],".tsv | obigrep -p \'seq_length>",Lmin,"\' -p \'seq_length<",Lmax,"\' -s \'^[ACGT]+$\' -p \'forward_tag!=None\' -p \'reverse_tag!=None\' --fasta-output > ",lib_prefix[j],".filtered_length_part_",sprintf("%02d",i),".fasta"))
+      X <- c(X,paste0("illuminapairedend -r ",lib_prefix[j],"_R2_part_",formatted_i,".fastq ",lib_prefix[j],"_R1_part_",formatted_i,".fastq | obigrep -p \'score>40.00\' | ngsfilter -t ngsfilter_",lib_prefix[j],".tsv | obigrep -p \'seq_length>",Lmin,"\' -p \'seq_length<",Lmax,"\' -s \'^[ACGT]+$\' -p \'forward_tag!=None\' -p \'reverse_tag!=None\' --fasta-output > ",lib_prefix[j],"_filtered_length_part_",sprintf("%02d",i),".fasta"))
     }  
-    for (prefix in lib_prefix) libslist <- paste0(libslist,prefix,".filtered_length_part*.fasta ")
+    for (prefix in lib_prefix) libslist <- paste0(libslist,prefix,"_filtered_length_part*.fasta ")
   } else {
       metadata <- read.table(paste0(lib,"_metadata.tsv"),sep="\t",header=T)
       fastqR1_list <- metadata$fastq_name_R1
@@ -45,10 +45,10 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
     # If not demultiplexed, then join all parts into a joined file and then split it into samples
     if (!demultiplexed){
       message("FREYJA is joining filtered reads into a single file.")
-      system(paste0("cat ",libslist," > ",lib,".joined.fasta"),intern=T,wait=T)
+      system(paste0("cat ",libslist," > ",lib,"_joined.fasta"),intern=T,wait=T)
       message("File ",lib,".joined.fasta written.")
       message("HELA will create individual files for each sample.")
-      system(paste0("obisplit -t sample ",lib,".joined.fasta"),intern=T,wait=T)
+      system(paste0("obisplit -t sample ",lib,"_joined.fasta"),intern=T,wait=T)
     }
     message("FREYJA is done.")
 }
