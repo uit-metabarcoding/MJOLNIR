@@ -7,7 +7,7 @@
 owi_obisample2vsearch <- function(infile,outfile=NULL,attrib="count"){
 
     # if outfile is not provided, calculate it from the infile
-    if (is.null(outfile)) outfile <- paste(substr(infile,1,nchar(infile)-6),".vsearch.fasta",sep="")
+    if (is.null(outfile)) outfile <- paste(substr(infile,1,nchar(infile)-6),"_vsearch.fasta",sep="")
 
     suppressPackageStartupMessages(library(Biostrings))
 
