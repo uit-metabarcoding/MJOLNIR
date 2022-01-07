@@ -14,9 +14,9 @@ mjolnir6_FRIGGA <- function(lib=NULL){
   # sept = separator characters used in taxonomy-annotated file and abundances file, respectively (default: ';;' )
   message("FRYGGA will produce a combined file.")
 
-  infile=paste0(lib,".ecotag.fasta.annotated.tsv")
-  abundances=paste0(lib,".SWARM_output.counts.tsv")
-  outfile=paste0(lib,".All_MOTUs.tsv")
+  infile=paste0(lib,"_ecotag_annotated.tsv")
+  abundances=paste0(lib,"_SWARM_output_counts.tsv")
+  outfile=paste0(lib,"_All_MOTUs.tsv")
 
   message("FRYGGA is reading the ecotag-annotated database from THOR...")
   ecotag_db <- read.table(infile,sep="\t",head=T,stringsAsFactors=F)
