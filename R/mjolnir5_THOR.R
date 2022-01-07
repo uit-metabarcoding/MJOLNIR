@@ -23,7 +23,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
   }
   message("THOR will add higher taxonomic ranks now.")
   filefasta <-paste0(lib,"_ecotag.fasta")
-  system(paste0("cat ",lib,"_seeds.ecotag_??.fasta > ",filefasta),intern=T,wait=T)
+  system(paste0("cat ",lib,"_seeds_ecotag_??.fasta > ",filefasta),intern=T,wait=T)
   outfile <-paste0(substr(filefasta,1,nchar(filefasta)-6),"_annotated.tsv")
   # Here old owi_add_taxonomy starts
   suppressPackageStartupMessages(library("Biostrings"))
