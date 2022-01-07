@@ -14,6 +14,7 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="",
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores*length(lib_prefix)
   old_path <- Sys.getenv("PATH")
+  Sys.setenv(PATH = paste(old_path, obipath, sep = ":")) 
   clust <- makeCluster(no_cores)
   X <- NULL
   libslist <- NULL
