@@ -14,45 +14,45 @@ mjolnir3_HELA <- function(lib,cores,obipath=""){
   no_cores <- cores
   clust <- makeCluster(no_cores)
   X <- NULL
-  for (i in sample_list) X <- c(X,paste0("obiuniq ",i,".fasta > ",i,".unique.fasta"))
+  for (i in sample_list) X <- c(X,paste0("obiuniq ",i,".fasta > ",i,"_unique.fasta"))
   clusterExport(clust, list("X","old_path","obipath"),envir = environment())
   clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   message("HELA will convert every sample file to vsearch format")
   X <- NULL
-  for (i in sample_list) X <- c(X,paste0(i,".unique.fasta"))
+  for (i in sample_list) X <- c(X,paste0(i,"_unique.fasta"))
   clusterExport(clust, list("X","old_path","obipath"),envir = environment())
   clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) owi_obisample2vsearch(x))
   message("HELA will remove chimaeras from each sample")
   X <- NULL
-  for (i in sample_list) X <- c(X,paste0("vsearch --uchime_denovo ",i,".unique.vsearch.fasta --sizeout --minh 0.90 --nonchimeras ",i,".nonchimeras.fasta --chimeras ",i,".chimeras.fasta --uchimeout ",i,".uchimeout.log"))
+  for (i in sample_list) X <- c(X,paste0("vsearch --uchime_denovo ",i,"_unique_vsearch.fasta --sizeout --minh 0.90 --nonchimeras ",i,"_nonchimeras.fasta --chimeras ",i,"_chimeras.fasta --uchimeout ",i,"_uchimeout.log"))
   clusterExport(clust, "X",envir = environment())
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
   message("HELA will put all non-chimaeric sequences together")
-  system(paste0("cat *.nonchimeras.fasta > ",lib,".no_chimeras.fasta"),intern=T,wait=T)
-  message("File ",lib,".no_chimeras.fasta written.")
-  system(paste0("sed -i 's/size/ count/g' ",lib,".no_chimeras.fasta"),intern=T,wait=T)
-  system(paste0("sed -i 's/;sample=/ sample=/g' ",lib,".no_chimeras.fasta"),intern=T,wait=T)
+  system(paste0("cat *_nonchimeras.fasta > ",lib,"_no_chimeras.fasta"),intern=T,wait=T)
+  message("File ",lib,"_no_chimeras.fasta written.")
+  system(paste0("sed -i 's/size/ count/g' ",lib,"_no_chimeras.fasta"),intern=T,wait=T)
+  system(paste0("sed -i 's/;sample=/ sample=/g' ",lib,"_no_chimeras.fasta"),intern=T,wait=T)
   
   # Check if the output of vsearch is in the right format. Otherwise, add ";" at the end of the headers in no_chimeras.fasta file
-  check_header <- readLines(paste0(lib,".no_chimeras.fasta"),1)
+  check_header <- readLines(paste0(lib,"_no_chimeras.fasta"),1)
   if (substr(check_header,nchar(check_header),nchar(check_header))!=";") {   
     suppressPackageStartupMessages(library(Biostrings))
-    file_nochim <- readDNAStringSet(paste0(lib,".no_chimeras.fasta"))
+    file_nochim <- readDNAStringSet(paste0(lib,"_no_chimeras.fasta"))
     file_nochim@ranges@NAMES <- paste0(file_nochim@ranges@NAMES,";")
-    writeXStringSet(file_nochim,paste0(lib,".no_chimeras.fasta"))       
+    writeXStringSet(file_nochim,paste0(lib,"_no_chimeras.fasta"))       
   }
             
-  system(paste0("obiuniq -m sample ",lib,".no_chimeras.fasta > ",lib,".unique.fasta"),intern=T,wait=T)
+  system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta > ",lib,"_unique.fasta"),intern=T,wait=T)
   message("HELA will change sequence identifiers to a short index")
-  system(paste0("obiannotate --seq-rank ",lib,".unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,".new.fasta"),intern=T,wait=T)
+  system(paste0("obiannotate --seq-rank ",lib,".unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,"_new.fasta"),intern=T,wait=T)
   message("HELA will change the format to vsearch, so ODIN can use it for SWARM.")
-  owi_obifasta2vsearch(infile=paste0(lib,".new.fasta"),outfile=paste0(lib,".vsearch.fasta"))
-  message("File ",lib,".vsearch.fasta written.")
+  owi_obifasta2vsearch(infile=paste0(lib,"_new.fasta"),outfile=paste0(lib,"_vsearch.fasta"))
+  message("File ",lib,"_vsearch.fasta written.")
   message("HELA is obtaining a table file with abundances of unique sequence in each sample")
-  system(paste0("obitab -o ",lib,".new.fasta >  ",lib,".new.tab"),intern=T,wait=T)
+  system(paste0("obitab -o ",lib,"_new.fasta >  ",lib,"_new.tab"),intern=T,wait=T)
   message("HELA is done.")
 }
 
