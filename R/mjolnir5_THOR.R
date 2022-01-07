@@ -8,23 +8,23 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
   message("THOR will split the seeds file into ",cores," fragments.")
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))	
-  system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,".seeds_nonsingleton.fasta"),intern=T,wait=T)
-  for (j in 1:9) if (file.exists(paste0(lib,".seeds_",j,".fasta"))) system(paste0("mv ",lib,".seeds_",j,".fasta ",lib,".seeds_",sprintf("%02d",j),".fasta"))
+  system(paste0("obidistribute -n ",cores," -p ",lib,".seeds ",lib,"_seeds_nonsingleton.fasta"),intern=T,wait=T)
+  for (j in 1:9) if (file.exists(paste0(lib,"_seeds_",j,".fasta"))) system(paste0("mv ",lib,"_seeds_",j,".fasta ",lib,"_seeds_",sprintf("%02d",j),".fasta"))
   message("THOR will assign the taxonomy to the order level with ecotag.")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
   clust <- makeCluster(no_cores)
   X <- NULL
-  for (i in 1:cores) X <- c(X,paste0("ecotag -d ",tax_dir,"/",taxo_db," -R ",tax_dir,"/",ref_db," ",lib,".seeds_",sprintf("%02d",i),".fasta > ",lib,".seeds.ecotag_",sprintf("%02d",i),".fasta"))
+  for (i in 1:cores) X <- c(X,paste0("ecotag -d ",tax_dir,"/",taxo_db," -R ",tax_dir,"/",ref_db," ",lib,"_seeds_",sprintf("%02d",i),".fasta > ",lib,"_seeds_ecotag_",sprintf("%02d",i),".fasta"))
   clusterExport(clust, list("X","old_path","obipath"),envir = environment())
   clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
   }
   message("THOR will add higher taxonomic ranks now.")
-  filefasta <-paste0(lib,".ecotag.fasta")
-  system(paste0("cat ",lib,".seeds.ecotag_??.fasta > ",filefasta),intern=T,wait=T)
-  outfile <-paste0(filefasta,".annotated.tsv")
+  filefasta <-paste0(lib,"_ecotag.fasta")
+  system(paste0("cat ",lib,"_seeds.ecotag_??.fasta > ",filefasta),intern=T,wait=T)
+  outfile <-paste0(filefasta,"_annotated.tsv")
   # Here old owi_add_taxonomy starts
   suppressPackageStartupMessages(library("Biostrings"))
   length_id <- 14 # This is the total length of the MOTU IDs in filefasta. It can be changed if needed.
