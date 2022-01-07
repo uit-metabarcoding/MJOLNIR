@@ -10,7 +10,7 @@ mjolnir8_RAGNAROC <- function(lib,metadata_table="",output_file="",min_reads=2,m
     if (output_file == "") output_file <- paste0(lib,"_final_dataset.tsv")
     #Load the dataset
         # If LULU file exists, load it, otherwise load the All_MOTUs file
-        file_to_load <- ifelse(file.exists(paste0(lib,".Curated_LULU.tsv")),paste0(lib,".Curated_LULU.tsv"),paste0(lib,".All_MOTUs.tsv"))
+        file_to_load <- ifelse(file.exists(paste0(lib,"_Curated_LULU.tsv")),paste0(lib,"_Curated_LULU.tsv"),paste0(lib,"_All_MOTUs.tsv"))
         db <- read.table(file_to_load,sep="\t",head=T,stringsAsFactors = F)
     # Select sample abundance columns
         sample_cols <- (1:ncol(db))[tolower(substr(names(db),6,11))=="sample"]
