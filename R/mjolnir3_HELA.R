@@ -49,7 +49,7 @@ mjolnir3_HELA <- function(lib,cores,obipath=""){
             
   system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta > ",lib,"_unique.fasta"),intern=T,wait=T)
   message("HELA will change sequence identifiers to a short index")
-  system(paste0("obiannotate --seq-rank ",lib,".unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,"_new.fasta"),intern=T,wait=T)
+  system(paste0("obiannotate --seq-rank ",lib,"_unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,"_new.fasta"),intern=T,wait=T)
   message("HELA will change the format to vsearch, so ODIN can use it for SWARM.")
   owi_obifasta2vsearch(infile=paste0(lib,"_new.fasta"),outfile=paste0(lib,"_vsearch.fasta"))
   message("File ",lib,"_vsearch.fasta written.")
