@@ -12,9 +12,11 @@ lib <- "BATS"
 ####################
 
 # FREYJA will do the paired-end alignment, demultiplexing & length filtering. This will be done for each sample file separately.
-mjolnir2_FREYJA("", cores, Lmin=299, Lmax=320,lib,demultiplexed=T,R1_motif="_R1.",R2_motif="_R2.")
+mjolnir2_FREYJA("", cores, Lmin=299, Lmax=320,lib,demultiplexed=T,primer_F="GGWACWRGWTGRACWNTNTAYCCYCC",primer_R="TANACYTCNGGRTGNCCRAARAAYCA",
+                R1_motif="_R1.",R2_motif="_R2.")
 
-# HELA will remove chimaeric sequences in a sample-by-sample basis, will change identifiers of remaining unique sequences & will generate a table of their abundances in each sample & a fasta file with unique sequences and their total abundance for ODIN
+# HELA will remove chimaeric sequences in a sample-by-sample basis, will change identifiers of remaining unique sequences 
+# And will generate a table of their abundances in each sample & a fasta file with unique sequences and their total abundance for ODIN
 mjolnir3_HELA(lib, cores)
 
 # ODIN will do the clustering & will generate a table with the abundances of each MOTU in each sample
