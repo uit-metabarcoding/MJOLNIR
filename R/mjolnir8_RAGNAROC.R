@@ -5,7 +5,8 @@
 # When remove_contamination = T a list of contaminants must be provided in contamination_file (a text file with one line for each contaminant scientific_name)
 
 
-mjolnir8_RAGNAROC <- function(lib,metadata_table="",output_file="",min_reads=2,min_relative=1/50000,sort_MOTUs="id",remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
+mjolnir8_RAGNAROC <- function(lib,metadata_table="",output_file="",min_reads=2,min_relative=1/50000,sort_MOTUs="id",
+                              remove_bacteria=F,remove_contamination=F,contamination_file="contaminants.txt"){
     message("RAGNAROC is coming. Original sample names will be recovered.")
     if (output_file == "") output_file <- paste0(lib,"_final_dataset.tsv")
     #Load the dataset
