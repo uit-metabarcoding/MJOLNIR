@@ -51,7 +51,7 @@ mjolnir3_HELA <- function(lib,cores,obipath=""){
   message("HELA will change sequence identifiers to a short index")
   system(paste0("obiannotate --seq-rank ",lib,"_unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,"_new.fasta"),intern=T,wait=T)
   message("HELA will change the format to vsearch, so ODIN can use it for SWARM.")
-  owi_obifasta2vsearch(infile=paste0(lib,"_new.fasta"),outfile=paste0(lib,"_vsearch.fasta"))
+  system(paste0("sed 's/ seq_rank.*;//g' ",lib,"_new.fasta | sed 's/ merge.*count/;size/g' | sed -e 's/\(.*\)/\U\1/' | sed -e 's/SIZE/size/' > ",lib,"_vsearch.fasta"),intern=T,wait=T)
   message("File ",lib,"_vsearch.fasta written.")
   message("HELA is obtaining a table file with abundances of unique sequences in each sample")
   system(paste0("obitab -o ",lib,"_new.fasta >  ",lib,"_new.tab"),intern=T,wait=T)
