@@ -40,7 +40,7 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
 - VSEARCH (Rognes et al. 2016): 
   Help on installing VSEARCH: https://github.com/torognes/vsearch
   
-- SWARM (Mahé et al. 2015):
+- SWARM v2.0 or newer (Mahé et al. 2015):
   Help on installing SWARM: https://github.com/torognes/swarm
   
 - LULU (Frøslev et al. 2017):
