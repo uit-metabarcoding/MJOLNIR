@@ -8,7 +8,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag
   message("THOR will split the seeds file into ",cores," fragments.")
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))	
-  system(paste0("obidistribute -n ",cores," -p ",lib,"_seeds ",lib,"_seeds_nonsingleton.fasta"),intern=T,wait=T)
+  system(paste0("obidistribute -n ",cores," -p ",lib,"_seeds ",lib,"_seeds_abundant.fasta"),intern=T,wait=T)
   for (j in 1:9) if (file.exists(paste0(lib,"_seeds_",j,".fasta"))) system(paste0("mv ",lib,"_seeds_",j,".fasta ",lib,"_seeds_",sprintf("%02d",j),".fasta"))
   message("THOR will assign the taxonomy to the order level with ecotag.")
   suppressPackageStartupMessages(library(parallel))
