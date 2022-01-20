@@ -3,9 +3,11 @@
 # This function uses the uchime_denovo algorithm implemented in VSEARCH to remove chimaeric sequences from the dataset.
 # HELA works in a sample-by-sample basis. HELA will process all individual fasta files in the current folder matching the pattern XXXX_sample_XXX.fasta.
 # This allows for parallel computing, significantly decreasing calculation times.  
+# HELA can optionally remove singleton sequences (default: remove_singletons=F), so that the computing time for clustering with ODIN will be considerably reduced. 
+# This is possibly a good idea for very large datasets (with > 5 million unique sequences before clustering)
 # The final dataset output is in VSEARCH format, so it can be directly fed into SWARM (ODIN).
 
-mjolnir3_HELA <- function(lib,cores,obipath=""){
+mjolnir3_HELA <- function(lib, cores, remove_singletons=F, obipath=""){
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
   sample_list <- gsub(".fasta","",list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fasta$"))
@@ -47,7 +49,9 @@ mjolnir3_HELA <- function(lib,cores,obipath=""){
     writeXStringSet(file_nochim,paste0(lib,"_no_chimeras.fasta"))       
   }
             
-  system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta > ",lib,"_unique.fasta"),intern=T,wait=T)
+  if !(remove_singletons) {system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta > ",lib,"_unique.fasta"),intern=T,wait=T)} else {
+    system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta | obigrep -p 'count>1' > ",lib,"_unique.fasta"),intern=T,wait=T)}
+
   message("HELA will change sequence identifiers to a short index")
   system(paste0("obiannotate --seq-rank ",lib,"_unique.fasta | obiannotate --set-identifier \'\"\'",lib,"\'_%09d\" % seq_rank\' > ",lib,"_new.fasta"),intern=T,wait=T)
   message("HELA will change the format to vsearch, so ODIN can use it for SWARM.")
