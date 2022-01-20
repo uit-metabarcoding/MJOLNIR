@@ -49,7 +49,7 @@ mjolnir3_HELA <- function(lib, cores, remove_singletons=F, obipath=""){
     writeXStringSet(file_nochim,paste0(lib,"_no_chimeras.fasta"))       
   }
             
-  if !(remove_singletons) {system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta > ",lib,"_unique.fasta"),intern=T,wait=T)} else {
+  if (!remove_singletons) {system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta > ",lib,"_unique.fasta"),intern=T,wait=T)} else {
     system(paste0("obiuniq -m sample ",lib,"_no_chimeras.fasta | obigrep -p 'count>1' > ",lib,"_unique.fasta"),intern=T,wait=T)}
 
   message("HELA will change sequence identifiers to a short index")
