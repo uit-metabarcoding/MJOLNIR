@@ -5,7 +5,8 @@
 ## After SWARM, ODIN will recalculate the abundances for every MOTU in every sample.
 ## Then (optionally) ODIN proceeds with within-MOTU denoising, using the DnoisE entropy-ratio algorithm for coding regions to get an ESV table. 
 ## Two obligatory arguments are needed: the name of the library, typically 4 characters, and the number of computing cores.
-## Three optional parameters: the clustering distance d (default=13), the minimum number of reads to keep a MOTU in the MOTU table (default=2),
+## Three optional parameters: the clustering distance d (default=13), 
+## min_reads_motu is the minimum number of reads to keep a MOTU in the MOTU table (default=2),
 ## and the minimum number of reads to keep an ESV in the final ESV file (default=2).
 ## Two boolean parameters can be selected: run_swarm can be set as FALSE to save time if a SWARM output is already available.
 ## And generate_ESV=TRUE (default) will use the DnoisE algorithm to produce an ESV table, along with the MOTU table.
@@ -13,7 +14,7 @@
 ## By Owen S. Wangensteen
 
 mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_swarm=TRUE,generate_ESV=FALSE,obipath=""){
-  # Minimum MOTU abundance to be kept in the output file can be selected. It is 2 by default.
+
   dnoise_path <- "~/DnoisE/DnoisE" # Change this to where the Dnoise executable is
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
@@ -121,8 +122,8 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
     message("File ", outfile_ESV, " written with ",nrow(ESV_table)," ESVs in ",length(id), " MOTUs")
   }
     
-  message("ODIN is now removing singleton MOTUs from the fasta output file, to make THOR's work an easier task.")
+  message("ODIN will now remove MOTUs with total abundance less than ",min_reads_motu," from the fasta output file, to decrease THOR's workload.")
   system(paste0("sed -i 's/;size/ size/g' ",lib,"_SWARM_seeds.fasta"),intern=T,wait=T)
-  system(paste0("obigrep -p 'size>1' ",lib,"_SWARM_seeds.fasta > ",lib,"_seeds_nonsingleton.fasta"),intern=T,wait=T)
+  system(paste0("obigrep -p 'size>",(min_reads_motu-1),"' ",lib,"_SWARM_seeds.fasta > ",lib,"_seeds_abundant.fasta"),intern=T,wait=T)
   message("ODIN is done.")
 }
