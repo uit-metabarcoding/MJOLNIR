@@ -17,7 +17,7 @@ mjolnir3_HELA <- function(lib, cores, remove_singletons=F, obipath=""){
   no_cores <- cores
   clust <- makeCluster(no_cores)
   X <- NULL
-  if length(fastq_list==0) {for (i in 1:sample_list) X <- c(X,paste0("obiuniq ",i," > ",i,"_unique.fasta"))} else{
+  if (length(fastq_list==0)) {for (i in 1:sample_list) X <- c(X,paste0("obiuniq ",i," > ",i,"_unique.fasta"))} else{
       for (i in 1:length(fastq_list)) X <- c(X,paste0("obiconvert --fasta-output ",fastq_list[i]," | obiuniq > ",sample_list[i],"_unique.fasta"))
   }
   clusterExport(clust, list("X","old_path","obipath"),envir = environment())
