@@ -10,13 +10,16 @@
 mjolnir3_HELA <- function(lib, cores, remove_singletons=F, obipath=""){
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
-  sample_list <- gsub(".fasta","",list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fasta$"))
+  fastq_list <- list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fastq$")
+  sample_list <- gsub(".fast[aq]","",list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fast[aq]$"))
   message("HELA will group unique sequences in every sample")
   suppressPackageStartupMessages(library(parallel))
   no_cores <- cores
   clust <- makeCluster(no_cores)
   X <- NULL
-  for (i in sample_list) X <- c(X,paste0("obiuniq ",i,".fasta > ",i,"_unique.fasta"))
+  if length(fastq_list==0) {for (i in 1:sample_list) X <- c(X,paste0("obiuniq ",i," > ",i,"_unique.fasta"))} else{
+      for (i in 1:length(fastq_list)) X <- c(X,paste0("obiconvert --fasta-output ",fastq_list[i]," | obiuniq > ",sample_list[i],"_unique.fasta"))
+  }
   clusterExport(clust, list("X","old_path","obipath"),envir = environment())
   clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
