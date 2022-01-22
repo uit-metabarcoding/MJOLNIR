@@ -22,12 +22,11 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
   fasta_modifier <- ifelse(fasta_output," --fasta-output","")
   if (!demultiplexed){
     for (i in 1:cores) for (j in 1:length(lib_prefix)) {
-      #if (cores<10) {formatted_i <- i} else {formatted_i <- sprintf("%02d",i)}
       formatted_i <- sprintf("%02d",i)
       X <- c(X,paste0("illuminapairedend -r ",lib_prefix[j],"_R2_part_",formatted_i,".fastq ",lib_prefix[j],"_R1_part_",formatted_i,
                                         ".fastq | obigrep -p \'score>40.00\' | ngsfilter -t ngsfilter_",lib_prefix[j],".tsv | obigrep -p \'seq_length>",
                                         Lmin,"\' -p \'seq_length<",Lmax,"\' -s \'^[ACGT]+$\' -p \'forward_tag!=None\' -p \'reverse_tag!=None\'",fasta_modifier," > ",
-                                        lib_prefix[j],"_filtered_length_part_",sprintf("%02d",i),ext_file)) 
+                                        lib_prefix[j],"_filtered_length_part_",sprintf("%02d",i),ext_file)) }
     for (prefix in lib_prefix) libslist <- paste0(libslist,prefix,"_filtered_length_part*",ext_file," ")
   } else {
       metadata <- read.table(paste0(lib,"_metadata.tsv"),sep="\t",header=T)
