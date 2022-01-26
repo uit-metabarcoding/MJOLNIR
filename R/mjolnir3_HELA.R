@@ -7,7 +7,7 @@
 # This is possibly a good idea for very large datasets (with > 5 million unique sequences before clustering)
 # The final dataset output is in VSEARCH format, so it can be directly fed into SWARM (ODIN).
 
-mjolnir3_HELA <- function(lib, cores, remove_singletons = T, obipath = ""){
+mjolnir3_HELA <- function(lib, cores, remove_singletons = TRUE, obipath = ""){
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
   fastq_list <- list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fastq$")
