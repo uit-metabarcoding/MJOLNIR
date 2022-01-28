@@ -16,7 +16,7 @@ mjolnir7_LOKI <- function(lib,min_id = .84){
   # min_id is the minimum identity between two sequences to be kept in the match_list output. Default: 0.84 
   
   message("LOKI will produce a pairwise match list for LULU.")
-  system(paste0("vsearch --usearch_global ",lib,"_seeds_nonsingleton.fasta --db ",lib,"_seeds_nonsingleton.fasta --self --id ",min_id," --iddef 1 --userout ",lib,"_match_list.txt -userfields query+target+id --maxaccepts 0 --query_cov .9 --maxhits 10"),intern=T,wait=T)
+  system(paste0("vsearch --usearch_global ",lib,"_seeds_abundant.fasta --db ",lib,"_seeds_abundant.fasta --self --id ",min_id," --iddef 1 --userout ",lib,"_match_list.txt -userfields query+target+id --maxaccepts 0 --query_cov .9 --maxhits 10"),intern=T,wait=T)
   message("LOKI will now remove the pseudogenes with LULU.")
   
   suppressPackageStartupMessages(library(lulu))
