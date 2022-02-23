@@ -49,7 +49,7 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
       message("FREYJA is joining filtered reads into a single file.")
       system(paste0("cat ",libslist," > ",lib,"_joined",ext_file),intern=T,wait=T)
       message("File ",lib,".joined",ext_file," written.")
-      message("HELA will create individual files for each sample.")
+      message("FREYJA will create individual files for each sample.")
       system(paste0("obisplit -t sample ",lib,"_joined",ext_file),intern=T,wait=T)
     }
     message("FREYJA is done.")
