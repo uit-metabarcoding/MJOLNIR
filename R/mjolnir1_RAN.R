@@ -3,7 +3,6 @@
 # RAN will be run only if your data consist of multiplexed libraries, which will be split into aliquote parts using obisplit, to be processed by FREYJA.
 
 mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",R2_motif="_R2"){
-  setwd('~/Nextcloud/2_PROJECTES/MJOLNIR/adriantich_tests/'); R1_filenames="../example_MJOLNIR_multiplexed_data_metafast/ULO1_R1.fastq.gz"; cores=3;lib_prefixes="ULOY";R1_motif="_R1";R2_motif="_R2"
     message(paste0("RAN will split initial FASTQ files in ",cores," fragments each."))
     filelist <- NULL
     outfilelist <- NULL
