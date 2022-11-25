@@ -3,6 +3,9 @@
 # RAN will be run only if your data consist of multiplexed libraries, which will be split into aliquote parts using obisplit, to be processed by FREYJA.
 
 mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",R2_motif="_R2"){
+  R1_filenames="../example_MJOLNIR_multiplexed_data_metafast/ULO1_R1.fastq";cores=3;lib_prefixes="ULO1";R1_motif="_R1";R2_motif="_R2"
+
+
     message(paste0("RAN will split initial FASTQ files in ",cores," fragments each."))
     filelist <- NULL
     outfilelist <- NULL
@@ -59,10 +62,12 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",
     num_seqs <- num_lines/4
     for (i in 1:length(filelist)) {
       if (i==1) {
-        commands <- NULL
         file_commands <- NULL
       }
       for (j in 1:cores) { # cores will be the number of output files per infile
+        if (j==1) {
+          commands <- NULL
+        }
         # get the lines on infile for each outfile
         lines_vector <- sort(c(seq(1+(j-1)*4,num_seqs[i]*4,((cores-1)*4+4)),
                             seq(2+(j-1)*4,num_seqs[i]*4,((cores-1)*4+4)),
@@ -80,7 +85,7 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",
           last_set <- length(lines_vector)-n_sets*sqs
           n_sets <- n_sets+1
         }
-        for (sets in 1:4){ #n_sets) {
+        for (sets in 1:4){# n_sets) {
           if (sets == n_sets) {
             set_endlines <- last_set + (sets-1)*sqs
           } else {
@@ -93,6 +98,11 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",
                                 collapse = ','),
                           "]){print}}' < ", filelist[i]," > ",
                           outfilelist[i],"_",sprintf("%02d",j),".fastq"))
+            Y <- c(paste0("echo '",
+                          paste(lines_vector[1:set_endlines],
+                                collapse = ','),
+                          "setnum",sets,"' > ",
+                          outfilelist[i],"_",sprintf("%02d",j),".txt"))
           } else {
             X <- c(X,
                    paste0("perl -e 'while(<>){if(++$l~~[",
@@ -100,9 +110,16 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",
                                 collapse = ','),
                           "]){print}}' < ", filelist[i]," >> ",
                           outfilelist[i],"_",sprintf("%02d",j),".fastq"))
+            Y <- c(Y,
+                   paste0("echo '",
+                          paste(lines_vector[1:set_endlines],
+                                collapse = ','),
+                          "setnum",sets,"' >> ",
+                          outfilelist[i],"_",sprintf("%02d",j),".txt"))
           }
         }
-        commands <- append(commands,list(list(X)))
+        # commands <- append(commands,list(list(X)))
+        commands <- append(commands,list(Y))
       }
       file_commands <- append(file_commands,commands)
     }
@@ -111,6 +128,7 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",
     clust <- makeCluster(no_cores)
     clusterExport(clust, list("file_commands","old_path"),envir = environment())
     clusterEvalQ(clust, {Sys.setenv(PATH = old_path)})
+    # parLapply(clust,file_commands, function(x) for (i in 1:length(x)) {system(x[i],intern=T,wait=T)})
     parLapply(clust,file_commands, function(x) lapply(x, function(y) system(y,intern=T,wait=T)))
     stopCluster(clust)
 
