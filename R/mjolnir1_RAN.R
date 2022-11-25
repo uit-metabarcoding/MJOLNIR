@@ -73,63 +73,27 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",
                             seq(2+(j-1)*4,num_seqs[i]*4,((cores-1)*4+4)),
                             seq(3+(j-1)*4,num_seqs[i]*4,((cores-1)*4+4)),
                             seq(4+(j-1)*4,num_seqs[i]*4,((cores-1)*4+4))))
-        # divide all in sets of 100 lines -> 25 seqs (system command is too long otherwise)
-        sqs <- 4*100
-        n_sets <- (floor(length(lines_vector)/sqs))
-        if (n_sets==0) { # if lines_vector length is lower than 100
-          n_sets <- 1
-          last_set <- length(lines_vector)
-        } else if (n_sets*sqs == length(lines_vector)) { # if lines_vector length is a multiple of 100
-          last_set <- sqs
-        } else { # if lines_vector length is NOT a multiple of 100
-          last_set <- length(lines_vector)-n_sets*sqs
-          n_sets <- n_sets+1
-        }
-        for (sets in 1:4){# n_sets) {
-          if (sets == n_sets) {
-            set_endlines <- last_set + (sets-1)*sqs
-          } else {
-            set_endlines <- sqs + (sets-1)*sqs
-          }
-          set_beginlines <- 1 + (sets-1)*sqs
-          if (sets == 1) {
-            X <- c(paste0("perl -e 'while(<>){if(++$l~~[",
-                          paste(lines_vector[1:set_endlines],
-                                collapse = ','),
-                          "]){print}}' < ", filelist[i]," > ",
-                          outfilelist[i],"_",sprintf("%02d",j),".fastq"))
-            Y <- c(paste0("echo '",
-                          paste(lines_vector[1:set_endlines],
-                                collapse = ','),
-                          "setnum",sets,"' > ",
-                          outfilelist[i],"_",sprintf("%02d",j),".txt"))
-          } else {
-            X <- c(X,
-                   paste0("perl -e 'while(<>){if(++$l~~[",
-                          paste(lines_vector[set_beginlines:set_endlines],
-                                collapse = ','),
-                          "]){print}}' < ", filelist[i]," >> ",
-                          outfilelist[i],"_",sprintf("%02d",j),".fastq"))
-            Y <- c(Y,
-                   paste0("echo '",
-                          paste(lines_vector[1:set_endlines],
-                                collapse = ','),
-                          "setnum",sets,"' >> ",
-                          outfilelist[i],"_",sprintf("%02d",j),".txt"))
-          }
-        }
-        # commands <- append(commands,list(list(X)))
-        commands <- append(commands,list(Y))
-      }
-      file_commands <- append(file_commands,commands)
-    }
 
+        commands <- append(commands,list(lines_vector))
+        # commands <- append(commands,list(Y))
+      }
+      file_commands <- append(file_commands,list(commands))
+    }
+    # outfilelist[i],"_",sprintf("%02d",j),".fastq"
 
     clust <- makeCluster(no_cores)
-    clusterExport(clust, list("file_commands","old_path"),envir = environment())
+    clusterExport(clust, list("file_commands","old_path","outfilelist","filelist","cores"),envir = environment())
     clusterEvalQ(clust, {Sys.setenv(PATH = old_path)})
     # parLapply(clust,file_commands, function(x) for (i in 1:length(x)) {system(x[i],intern=T,wait=T)})
-    parLapply(clust,file_commands, function(x) lapply(x, function(y) system(y,intern=T,wait=T)))
+    # parLapply(clust,file_commands, function(x) lapply(x, function(y) system(y,intern=T,wait=T)))
+    parLapply(clust,c(1:length(filelist)), function(x,filelist=filelist,outfilelist=outfilelist,cores=cores){
+      file_read <- readLines(filelist[x])
+      for (i in 1:cores) {
+        writeLines(
+          file_read[file_commands[[x]][[i]]], paste0(outfilelist[x],"_",sprintf("%02d",i),".fastq")
+        )
+      }
+    },filelist=filelist,outfilelist=outfilelist,cores=cores)
     stopCluster(clust)
 
     message("Splitting done.")
