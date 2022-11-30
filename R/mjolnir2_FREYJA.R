@@ -73,7 +73,7 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
                       file,"_FREYJA/filtered_seqs "),intern=T,wait=T)
       }
     }
-    # obi uniq vas performed in HELA in past versions but now is computed here
+    # obi uniq vas performed in HELA in previous versions but now is computed here
     files <- list.dirs(recursive = F)
     files <- files[grepl('sample',files)&grepl('FREYJA.obidms',files)]
     files <- gsub('./','',gsub('.obidms','',files))
