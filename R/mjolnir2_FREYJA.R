@@ -46,8 +46,7 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
         "obi import --ngsfilter-input ngsfilter_",agnomens[i],".tsv ", lib,"_",agnomens[i],"_FREYJA/ngsfile ; ",
         "obi alignpairedend -R ", lib,"_",agnomens[i],"_FREYJA/reads2 ", lib,"_",agnomens[i],"_FREYJA/reads1 ", lib,"_",agnomens[i],"_FREYJA/aligned_seqs ; ",
         "obi grep -p \"sequence[\'score\'] > ",score_obialign,"\" ", lib,"_",agnomens[i],"_FREYJA/aligned_seqs ", lib,"_",agnomens[i],"_FREYJA/good_seqs ; ",
-        "obi ngsfilter --no-tags -t ", lib,"_",agnomens[i],"_FREYJA/ngsfile -u ", lib,"_",agnomens[i],"_FREYJA/unidentified_seqs ", lib,"_",agnomens[i],"_FREYJA/good_seqs ",lib,"_",agnomens[i],"_FREYJA/identified_seqs_nosample ; ",
-        "obi annotate -S \"sample:'", agnomens[i], "'\" ", lib,"_",agnomens[i],"_FREYJA/identified_seqs_nosample ",lib,"_",agnomens[i],"_FREYJA/identified_seqs ; ",
+        "obi ngsfilter --no-tags -t ", lib,"_",agnomens[i],"_FREYJA/ngsfile -u ", lib,"_",agnomens[i],"_FREYJA/unidentified_seqs ", lib,"_",agnomens[i],"_FREYJA/good_seqs ",lib,"_",agnomens[i],"_FREYJA/identified_seqs ; ",
         "obi grep -p \"len(sequence)>",Lmin," and len(sequence)<",Lmax,"\" -S \"^[ACGT]+$\" ",lib,"_",agnomens[i],"_FREYJA/identified_seqs ",lib,"_",agnomens[i],"_FREYJA/filtered_seqs ; "))
     }
   }
@@ -81,11 +80,11 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
   X <- NULL
   for (file in files) {
     X <- c(X,paste0("obi uniq ",file,"/filtered_seqs ",file,"/uniq ; ",
-                    "obi export --fasta-output --only-keys \"sample\" --only-keys \"COUNT\" ",file,"/uniq > ",file,"_uniq.fasta ; ",
+                    "obi export --fasta-output --only-keys \"COUNT\" ",file,"/uniq > ",file,"_uniq.fasta ; ",
                     "sed -i 's/COUNT/size/g' ",file,"_uniq.fasta ; ",
                     "sed -i 's/;//g' ",file,"_uniq.fasta ; ",
-                    "sed -i 's/ /;/g' ",file,"_uniq.fasta ; ",
-                    "sed -i -E 's/(.*);.*$/\\1;/' ",file,"_uniq.fasta "))
+                    "sed -E -i 's/(size=[0-9]*).*/\\1;/g' ",file,"_uniq.fasta ; ",
+                    "sed -i 's/ /;/g' ",file,"_uniq.fasta "))
   }
   clust <- makeCluster(no_cores)
   clusterExport(clust, list("X","old_path","obipath"),envir = environment())

@@ -86,14 +86,14 @@ mjolnir1_RAN <- function(R1_filenames="",cores=1,lib_prefixes="",R1_motif="_R1",
     clusterEvalQ(clust, {Sys.setenv(PATH = old_path)})
     # parLapply(clust,file_commands, function(x) for (i in 1:length(x)) {system(x[i],intern=T,wait=T)})
     # parLapply(clust,file_commands, function(x) lapply(x, function(y) system(y,intern=T,wait=T)))
-    parLapply(clust,c(1:length(filelist)), function(x,filelist=filelist,outfilelist=outfilelist,cores=cores){
-      file_read <- readLines(filelist[x])
-      for (i in 1:cores) {
-        writeLines(
-          file_read[file_commands[[x]][[i]]], paste0(outfilelist[x],"_",sprintf("%02d",i),".fastq")
-        )
-      }
-    },filelist=filelist,outfilelist=outfilelist,cores=cores)
+    parLapply(clust,c(1:length(filelist)),
+              function(x,filelist=filelist,outfilelist=outfilelist,cores=cores){
+                file_read <- readLines(filelist[x])
+                for (i in 1:cores) {
+                  writeLines(file_read[file_commands[[x]][[i]]],
+                             paste0(outfilelist[x],"_",sprintf("%02d",i),".fastq"))
+                }
+              }, filelist=filelist,outfilelist=outfilelist,cores=cores)
     stopCluster(clust)
 
     message("Splitting done.")
