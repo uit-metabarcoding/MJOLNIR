@@ -2,7 +2,10 @@
 suppressPackageStartupMessages(library(mjolnir))
 
 # Define number of cores to be used in parallel.
-cores <- 16
+# cores <- 16
+cores <- 3; setwd('~/Nextcloud/2_PROJECTES/MJOLNIR/example_MJOLNIR_demultiplexed_data/');
+obipath="/home/adriantich/obi3-env/bin/"
+
 
 # Input name for the final combined library (should be a 4-character name)
 lib <- "BATS"
@@ -15,7 +18,7 @@ lib <- "BATS"
 mjolnir2_FREYJA("", cores, Lmin=299, Lmax=320,lib,demultiplexed=T,primer_F="GGWACWRGWTGRACWNTNTAYCCYCC",primer_R="TANACYTCNGGRTGNCCRAARAAYCA",
                 R1_motif="_R1.",R2_motif="_R2.")
 
-# HELA will remove chimaeric sequences in a sample-by-sample basis, will change identifiers of remaining unique sequences 
+# HELA will remove chimaeric sequences in a sample-by-sample basis, will change identifiers of remaining unique sequences
 # And will generate a table of their abundances in each sample & a fasta file with unique sequences and their total abundance for ODIN
 mjolnir3_HELA(lib, cores)
 

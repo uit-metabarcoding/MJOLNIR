@@ -1,7 +1,7 @@
 # FREYJA: Filtering of Reads, Enrollment, Yoke-reads Joining and Alignment
 
-# FREYJA will use OBITools commands to merge paired-end reads, demultiplex libraries into samples (if needed),trim primer sequences, filter by length.
-# In case the data are already demultiplexed and consist of individual fastq files for each sample, use the option demultiplexed=TRUE.
+# FREYJA will use OBITools3 commands to merge paired-end reads, demultiplex libraries into samples (if needed),trim primer sequences, filter by length.
+# In case the data is already demultiplexed and consist of individual fastq files for each sample, use the option demultiplexed=TRUE.
 # When demultiplexed=TRUE, FREYJA will read the names of each individual R1 fastq files from a column in the LIBX_metadata.tsv file, called fastq_name_R1
 # In the metadata table, each sample in the original_samples column must have a matching fastq_name_R1 and a matching mjolnir_agnomen (LIBX_sample_XXX).
 # When demultiplexed=TRUE, you must also specify the R1_motif and R2_motif strings in the options input to FREYJA.
@@ -16,6 +16,13 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
   no_cores <- cores*length(lib_prefix)
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
+
+  before_FREYJA <- lapply(lib_prefix, function(prefix,cores){
+    mclapply(1:cores,function(i,prefix){
+      return(data.frame(file=paste0(lib_prefix[j],"_R1_part_",formatted_i,".fastq"),
+                        num_seqs=as.numeric(system(paste0("grep '>' ",lib_prefix[j],"_R1_part_",formatted_i,".fastq | wc -l"),intern = T,wait = T))))
+    },prefix=prefix,mc.cores = cores)
+  },cores=cores)
 
   X <- NULL
   libslist <- NULL
@@ -92,6 +99,17 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
 
+
+  after_FREYJA <- mclapply(files,function(file){
+    output <- system(paste0("obi ls ",file," | grep 'filtered_seqs\\|uniq'"),intern = T,wait = T)
+    values <- as.numeric(gsub(".*count: ","",output))
+    return(data.frame(file=file,
+                      version=c('filtered_seqs','uniq'),
+                      num_seqs=values))
+  },mc.cores = cores)
+
+  save("summary_FREYJA.RData",list = c("before_FREYJA","after_FREYJA"))
+
   # if required, export to fasta or fastq. These options is to return the files without joining amplicons with obi uniq
   if (fasta_output | fastq_output) {
     files <- list.dirs(recursive = F)
@@ -121,5 +139,6 @@ mjolnir2_FREYJA <- function(lib_prefix="",cores=1,Lmin=299,Lmax=320,lib="", fast
     stopCluster(clust)
 
   }
+
   message("FREYJA is done.")
 }
