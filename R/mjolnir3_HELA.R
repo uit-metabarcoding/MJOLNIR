@@ -28,16 +28,6 @@ mjolnir3_HELA <- function(lib, cores, obipath = ""){
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
 
-  after_HELA <- mclapply(sample_list,function(file){
-    output <- system(paste0("grep '>' ",file,"_HELA_nonchimeras.fasta | wc -l"),intern = T,wait = T)
-    value <- as.numeric(output)
-    return(data.frame(file=paste0(file,"_HELA_nonchimeras.fasta"),
-                      num_seqs=value))
-  },mc.cores = cores)
-  after_HELA <- do.call('rbind',after_HELA)
-
-  save(file = "summary_HELA.RData",list = c("after_HELA"))
-
   message("HELA is done.")
 }
 

@@ -2,63 +2,29 @@
 # This is a wrapper of ecotag
 # After assignment with ecotag, higher taxa at ranks higher than order are added from custom CSV files.
 # THOR replaces owi_add_taxonomy
-
-mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NULL,obipath="",run_ecotag=T){
-  setwd('~/Nextcloud/2_PROJECTES/MJOLNIR/adriantich_tests/');
-  # setwd('~/Nextcloud/2_PROJECTES/MJOLNIR/example_MJOLNIR_demultiplexed_data/');
-  cores=3; obipath="/home/adriantich/obi3-env/bin/";
-  lib='ULOY'
-  tax_dir='taxo_dir'
-  tax_db='taxdump.tar.gz'
-  ref_db='DUFA_proves_small.fasta'
-  # tax_dms=NULL
-  tax_dms=paste0(lib, "_THOR_taxo")
-
-
+ 
+mjolnir5_THOR <- function(lib,cores,tax_dir,ref_db,taxo_db,obipath="",run_ecotag=T){
+  if (run_ecotag) {	
+  message("THOR will split the seeds file into ",cores," fragments.")
   old_path <- Sys.getenv("PATH")
-  Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
-
-  if (run_ecotag) {
-    message("THOR will assign the taxonomy to the order level with ecotag.")
-
-    if (is.null(tax_dms)) {
-      system(paste0("obi import ",tax_dir,"/",ref_db," ",lib, "_THOR_taxo/ref_seqs ; ",
-                    "obi import --taxdump ",tax_dir,"/",tax_db," ",lib, "_THOR_taxo/taxonomy/my_tax ; ",
-                    "obi grep --require-rank=species --require-rank=genus --require-rank=family --taxonomy ",lib, "_THOR_taxo/taxonomy/my_tax ",lib, "_THOR_taxo/ref_seqs ",lib, "_THOR_taxo/ref_seqs_clean ; ",
-                    "obi uniq --taxonomy ",lib, "_THOR_taxo/taxonomy/my_tax ",lib, "_THOR_taxo/ref_seqs_clean ",lib, "_THOR_taxo/ref_seqs_uniq ; ",
-                    "obi build_ref_db -t 0.95 --taxonomy ",lib, "_THOR_taxo/taxonomy/my_tax ",lib, "_THOR_taxo/ref_seqs_uniq ",lib, "_THOR_taxo/ref_seqs_db "),
-             intern = T, wait = T)
-      tax_dms <- paste0(lib, "_THOR_taxo")
-    }
-
-    # it is necessary to run ecotag within a new directory for each part.
-    # this is because dms can not be calles from two processes at the same time
-    # and can not change the name of the dms so make a copy in each directory and
-    # run there the ecotag
-    X <- NULL
-    for (i in 1:cores) {
-      system(paste0("mkdir ",lib, "_THOR_",sprintf("%02d",i)," ; cp -r ",tax_dms,".obidms ",lib, "_THOR_",sprintf("%02d",i),"/. ; "),intern = T, wait = T)
-      X <- c(X,paste0("cd ",lib, "_THOR_",sprintf("%02d",i)," ; ",
-                      "obi import --fasta-input ../",lib,"_ODIN_part_",sprintf("%02d",i),".fasta ",tax_dms,"/seqs ; ",
-                      # "obi import --fasta-input ",lib,"_ODIN_part_",sprintf("%02d",i),".fasta ",lib, "_THOR_",sprintf("%02d",i),"/seqs ; ",
-                      "obi ecotag --taxonomy ",tax_dms,"/taxonomy/my_tax -R ",tax_dms,"/ref_seqs_db ",tax_dms,"/seqs ",tax_dms,"/assigned_seqs ; ",
-                      "obi export --fasta-output ",tax_dms,"/assigned_seqs >../",lib,"_THOR_part_",sprintf("%02d",i),".fasta"))
-      # "obi ecotag --taxonomy ",lib, "_THOR_",sprintf("%02d",i),"/taxonomy/my_tax -R ",lib, "_THOR_",sprintf("%02d",i),"/ref_seqs_db ",lib, "_THOR_",sprintf("%02d",i),"/seqs ",lib, "_THOR_",sprintf("%02d",i),"/assigned_seqs"))
-    }
-
-    suppressPackageStartupMessages(library(parallel))
-    no_cores <- cores
-    clust <- makeCluster(no_cores)
-    clusterExport(clust, list("X","old_path","obipath"),envir = environment())
-    clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))})
-    parLapply(clust,X, function(x) system(x,intern=T,wait=T))
-    stopCluster(clust)
+  Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))	
+  system(paste0("obidistribute -n ",cores," -p ",lib,"_seeds ",lib,"_seeds_abundant.fasta"),intern=T,wait=T)
+  for (j in 1:9) if (file.exists(paste0(lib,"_seeds_",j,".fasta"))) system(paste0("mv ",lib,"_seeds_",j,".fasta ",lib,"_seeds_",sprintf("%02d",j),".fasta"))
+  message("THOR will assign the taxonomy to the order level with ecotag.")
+  suppressPackageStartupMessages(library(parallel))
+  no_cores <- cores
+  clust <- makeCluster(no_cores)
+  X <- NULL
+  for (i in 1:cores) X <- c(X,paste0("ecotag -d ",tax_dir,"/",taxo_db," -R ",tax_dir,"/",ref_db," ",lib,"_seeds_",sprintf("%02d",i),".fasta > ",lib,"_seeds_ecotag_",sprintf("%02d",i),".fasta"))
+  clusterExport(clust, list("X","old_path","obipath"),envir = environment())
+  clusterEvalQ(clust, {Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))}) 
+  parLapply(clust,X, function(x) system(x,intern=T,wait=T))
+  stopCluster(clust)
   }
-
   message("THOR will add higher taxonomic ranks now.")
-  filefasta <-paste0(lib,"_THOR.fasta")
-  system(paste0("cat ",lib,"_THOR_part_??.fasta > ",filefasta),intern=T,wait=T)
-  outfile <- paste0(lib,"_THOR_annotated.tsv")
+  filefasta <-paste0(lib,"_ecotag.fasta")
+  system(paste0("cat ",lib,"_seeds_ecotag_??.fasta > ",filefasta),intern=T,wait=T)
+  outfile <-paste0(substr(filefasta,1,nchar(filefasta)-6),"_annotated.tsv")
   # Here old owi_add_taxonomy starts
   suppressPackageStartupMessages(library("Biostrings"))
   length_id <- 14 # This is the total length of the MOTU IDs in filefasta. It can be changed if needed.
@@ -92,103 +58,103 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
                   "Palaeonemertea","Euopisthobranchia","Euteleosteomorpha","Littorinimorpha","Littorinoidea","Fragilariophycidae","Mandibulata",
                   "Actinopterygii","Batoidea","Boreoeutheria","Cephalaspidea","Clitellata","Clupeocephala","Decapodiformes","Echinacea","Euechinoidea",
                   "Embryophyta","Eupercaria","Percomorphaceae","Ophiuridea","Patellogastropoda","Piroplasmida","Pteriomorphia","Synurophyceae",
-                  "Vetigastropoda","CirripFedia","Dikarya","Euacanthomorphacea","Galeoidea","Gnathostomata","Intramacronucleata","Neogastropoda",
-                  "Phascolosomatidea","Trachylinae","Hexapoda","Oligochaeta","Sacoglossa","Thoracica","Buccinoidea","Digenea",
-                  "Agaricomycetes incertae sedis","Agaricomycetidae","Agaricomycotina","Amniota","Amoebozoa","Anystina","Apusozoa","Armophorea",
-                  "Bryophyta","Centroheliozoa","Cercozoa","Enoplia","asterids","campanulids","lamiids","rosids","Magnoliophyta","Mesangiospermae",
-                  "Pentapetalae","Pezizomycotina","Pinidae","Poduroidea","Prostigmata","Rhabditophora","Scuticociliatia","Silicofilosea","Sipuncula",
-                  "Spermatophyta","Tubulinea","Ustilaginomycotina","Xanthophyceae","Petrosaviidae","Peritrichia","Moniliformopses",
-                  "Lecanoromycetidae","Labyrinthulomycetes","Hydracarina","Gregarinasina","Dactylopodida","Cymbellales","eudicotyledons",
-                  "Pucciniomycotina","Taphrinomycotina","Dorylaimia","Teleostei","Stichotrichia","Peritrichia","Oligotrichia",
-                  "Choreotrichia","Ciliophora","Cryptophyta","Trichostomatia","Seriata","Tunicata","Tubulinida","Paraneoptera","saccharomyceta",
-                  "Euphyllophyta","Coscinodiscophycidae","Corallinophycidae","Biddulphiophycidae","Bdelloidea","Acanthomorphata","Leotiomycetes incertae sedis",
-                  "Ctenosquamata","Euteleosteomorpha","Heteroscleromorpha","Hexanauplia","Imparidentia","Neoloricata","Ochrophyta","Prymnesiophyceae",
-                  "Rhodymeniophycidae","Sedentaria","Sar","Nemaliophycidae","Heteroconchia","Euheterodonta","Palaeoheterodonta",
-                  "Picobiliphyte sp. MS584-11","beta proteobacterium CB","Chrysophyceae sp.","Bacteria","uncultured bacterium","uncultured actinobacterium"
+		  "Vetigastropoda","CirripFedia","Dikarya","Euacanthomorphacea","Galeoidea","Gnathostomata","Intramacronucleata","Neogastropoda",
+		  "Phascolosomatidea","Trachylinae","Hexapoda","Oligochaeta","Sacoglossa","Thoracica","Buccinoidea","Digenea",
+		  "Agaricomycetes incertae sedis","Agaricomycetidae","Agaricomycotina","Amniota","Amoebozoa","Anystina","Apusozoa","Armophorea",
+		  "Bryophyta","Centroheliozoa","Cercozoa","Enoplia","asterids","campanulids","lamiids","rosids","Magnoliophyta","Mesangiospermae",
+		  "Pentapetalae","Pezizomycotina","Pinidae","Poduroidea","Prostigmata","Rhabditophora","Scuticociliatia","Silicofilosea","Sipuncula",
+		  "Spermatophyta","Tubulinea","Ustilaginomycotina","Xanthophyceae","Petrosaviidae","Peritrichia","Moniliformopses",
+		  "Lecanoromycetidae","Labyrinthulomycetes","Hydracarina","Gregarinasina","Dactylopodida","Cymbellales","eudicotyledons",
+		  "Pucciniomycotina","Taphrinomycotina","Dorylaimia","Teleostei","Stichotrichia","Peritrichia","Oligotrichia",
+		  "Choreotrichia","Ciliophora","Cryptophyta","Trichostomatia","Seriata","Tunicata","Tubulinida","Paraneoptera","saccharomyceta",
+		  "Euphyllophyta","Coscinodiscophycidae","Corallinophycidae","Biddulphiophycidae","Bdelloidea","Acanthomorphata","Leotiomycetes incertae sedis",
+		  "Ctenosquamata","Euteleosteomorpha","Heteroscleromorpha","Hexanauplia","Imparidentia","Neoloricata","Ochrophyta","Prymnesiophyceae",
+		  "Rhodymeniophycidae","Sedentaria","Sar","Nemaliophycidae","Heteroconchia","Euheterodonta","Palaeoheterodonta",
+		  "Picobiliphyte sp. MS584-11","beta proteobacterium CB","Chrysophyceae sp.","Bacteria","uncultured bacterium","uncultured actinobacterium"
   )
 
   fix_exceptions <- function(scientific_name){
-    if (scientific_name %in% c("asterids","campanulids","lamiids","rosids","Pentapetalae","Mesangiospermae","eudicotyledons","Magnoliophyta")) {
+   if (scientific_name %in% c("asterids","campanulids","lamiids","rosids","Pentapetalae","Mesangiospermae","eudicotyledons","Magnoliophyta")) {
       matrix.data["class_name",2] <- "Magnoliopsida"
       matrix.data["phylum_name",2] <- "Tracheophyta"
       matrix.data["kingdom_name",2] <- "Viridiplantae"
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
     }
-    if (scientific_name %in% c("Pinidae")) {
+   if (scientific_name %in% c("Pinidae")) {
       matrix.data["class_name",2] <- "Pinopsida"
       matrix.data["phylum_name",2] <- "Tracheophyta"
       matrix.data["kingdom_name",2] <- "Viridiplantae"
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
     }
-    if (scientific_name %in% c("Moniliformopses","Euphyllophyta")) {
+   if (scientific_name %in% c("Moniliformopses","Euphyllophyta")) {
       matrix.data["class_name",2] <- "None"
       matrix.data["phylum_name",2] <- "Tracheophyta"
       matrix.data["kingdom_name",2] <- "Viridiplantae"
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
     }
-    if (scientific_name %in% c("Bacteria","uncultured bacterium","uncultured actinobacterium")) {
+   if (scientific_name %in% c("Bacteria","uncultured bacterium","uncultured actinobacterium")) {
       matrix.data["kingdom_name",2] <- "Bacteria"
       matrix.data["superkingdom_name",2] <- "Prokaryota"
     }
-    if (scientific_name %in% c("beta proteobacterium CB")) {
+   if (scientific_name %in% c("beta proteobacterium CB")) {
       matrix.data["class_name",2] <- "Betaproteobacteria"
       matrix.data["phylum_name",2] <- "Proteobacteria"
       matrix.data["kingdom_name",2] <- "Bacteria"
       matrix.data["superkingdom_name",2] <- "Prokaryota"
     }
-    if (scientific_name %in% c("Stichotrichia","Peritrichia","Oligotrichia","Choreotrichia","Ciliophora","Trichostomatia")) {
+   if (scientific_name %in% c("Stichotrichia","Peritrichia","Oligotrichia","Choreotrichia","Ciliophora","Trichostomatia")) {
       matrix.data["class_name",2] <- "None"
       matrix.data["phylum_name",2] <- "Ciliophora"
       matrix.data["kingdom_name",2] <- "Alveolata"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
 
-    if (scientific_name %in% c("Petrosaviidae")) {
+   if (scientific_name %in% c("Petrosaviidae")) {
       matrix.data["class_name",2] <- "Liliopsida"
       matrix.data["phylum_name",2] <- "Tracheophyta"
       matrix.data["kingdom_name",2] <- "Viridiplantae"
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
     }
-    if (scientific_name %in% c("Centroheliozoa")) {
+   if (scientific_name %in% c("Centroheliozoa")) {
       matrix.data["class_name",2] <- "Centrohelea"
       matrix.data["phylum_name",2] <- "Heliozoa"
       matrix.data["kingdom_name",2] <- "Hacrobia"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-    if (scientific_name %in% c("Sar")) {
+   if (scientific_name %in% c("Sar")) {
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-    if (scientific_name %in% c("Cryptophyta")) {
+   if (scientific_name %in% c("Cryptophyta")) {
       matrix.data["class_name",2] <- "None"
       matrix.data["phylum_name",2] <- "Cryptophyta"
       matrix.data["kingdom_name",2] <- "Hacrobia"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-    if (scientific_name %in% c("Prymnesiophyceae")) {
+   if (scientific_name %in% c("Prymnesiophyceae")) {
       matrix.data["class_name",2] <- "Prymnesiophyceae"
       matrix.data["phylum_name",2] <- "Haptophyta"
       matrix.data["kingdom_name",2] <- "Hacrobia"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-    if (scientific_name %in% c("Picobiliphyte sp. MS584-11")) {
+   if (scientific_name %in% c("Picobiliphyte sp. MS584-11")) {
       matrix.data["class_name",2] <- "Picomonadea"
       matrix.data["phylum_name",2] <- "Picozoa"
       matrix.data["kingdom_name",2] <- "Hacrobia"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
-    }
-    if (scientific_name %in% c("Chrysophyceae sp.")) {
+    }  
+   if (scientific_name %in% c("Chrysophyceae sp.")) {
       matrix.data["class_name",2] <- "Chrysophyceae"
       matrix.data["phylum_name",2] <- "Ochrophyta"
       matrix.data["kingdom_name",2] <- "Stramenopiles"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-    if (scientific_name %in% c("Ochrophyta")) {
+   if (scientific_name %in% c("Ochrophyta")) {
       matrix.data["phylum_name",2] <- "Ochrophyta"
       matrix.data["kingdom_name",2] <- "Stramenopiles"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
-      matrix.data["rank",2] <- "phylum"
+      matrix.data["rank",2] <- "phylum"   
     }
-    if (scientific_name %in% c("Cymbellales")) {
+   if (scientific_name %in% c("Cymbellales")) {
       matrix.data["class_name",2] <- "Bacillariophyceae"
       matrix.data["phylum_name",2] <- "Bacillariophyta"
       matrix.data["kingdom_name",2] <- "Stramenopiles"
@@ -207,77 +173,77 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
       matrix.data["kingdom_name",2] <- "Stramenopiles"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-
-    if (scientific_name %in% c("Enoplia","Dorylaimia")) {
+	  	  
+   if (scientific_name %in% c("Enoplia","Dorylaimia")) {
       matrix.data["class_name",2] <- "Enoplea"
       matrix.data["phylum_name",2] <- "Nematoda"
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("Rhabditophora","Seriata")) {
+   if (scientific_name %in% c("Rhabditophora","Seriata")) {
       matrix.data["class_name",2] <- "Rhabditophora"
       matrix.data["phylum_name",2] <- "Platyhelminthes"
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("Gregarinasina")) {
+   if (scientific_name %in% c("Gregarinasina")) {
       matrix.data["class_name",2] <- "Conoidasida"
       matrix.data["phylum_name",2] <- "Apicomplexa"
       matrix.data["kingdom_name",2] <- "Alveolata"
       matrix.data["superkingdom_name",2] <- "Chromalveolata"
     }
-    if (scientific_name %in% c("Tubulinea","Tubulinida")) {
+   if (scientific_name %in% c("Tubulinea","Tubulinida")) {
       matrix.data["class_name",2] <- "Tubulinea"
       matrix.data["phylum_name",2] <- "Tubulinea"
       matrix.data["kingdom_name",2] <- "Lobosa"
       matrix.data["superkingdom_name",2] <- "Amoebozoa"
     }
-    if (scientific_name %in% c("Dactylopodida")) {
+   if (scientific_name %in% c("Dactylopodida")) {
       matrix.data["class_name",2] <- "Flabellinia"
       matrix.data["phylum_name",2] <- "Discosea"
       matrix.data["kingdom_name",2] <- "Lobosa"
       matrix.data["superkingdom_name",2] <- "Amoebozoa"
     }
     if (scientific_name %in% c( "Amoebozoa","Apusozoa")) {
-      matrix.data["superkingdom_name",2] <- scientific_name
+     matrix.data["superkingdom_name",2] <- scientific_name
     }
-    if (scientific_name %in% c("Pezizomycotina","Taphrinomycotina")) {
+   if (scientific_name %in% c("Pezizomycotina","Taphrinomycotina")) {
       matrix.data["phylum_name",2] <- "Ascomycota"
       matrix.data["kingdom_name",2] <- "Fungi"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("saccharomyceta")) {
+   if (scientific_name %in% c("saccharomyceta")) {
       matrix.data["class_name",2] <- "Saccharomycetes"
       matrix.data["phylum_name",2] <- "Ascomycota"
       matrix.data["kingdom_name",2] <- "Fungi"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("Lecanoromycetidae")) {
+   if (scientific_name %in% c("Lecanoromycetidae")) {
       matrix.data["class_name",2] <- "Lecanoromycetes"
       matrix.data["phylum_name",2] <- "Ascomycota"
       matrix.data["kingdom_name",2] <- "Fungi"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
 
-    if (scientific_name %in% c("Agaricomycotina","Pucciniomycotina","Ustilaginomycotina")) {
+   if (scientific_name %in% c("Agaricomycotina","Pucciniomycotina","Ustilaginomycotina")) {
       matrix.data["phylum_name",2] <- "Basidiomycota"
       matrix.data["kingdom_name",2] <- "Fungi"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
 
-    if (scientific_name %in% c("Agaricomycetes incertae sedis","Agaricomycetidae")) {
+   if (scientific_name %in% c("Agaricomycetes incertae sedis","Agaricomycetidae")) {
       matrix.data["class_name",2] <- "Agaricomycetes"
       matrix.data["phylum_name",2] <- "Basidiomycota"
       matrix.data["kingdom_name",2] <- "Fungi"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in% c("Bryophyta")) {
+   if (scientific_name %in% c("Bryophyta")) {
       matrix.data["phylum_name",2] <- "Bryophyta"
       matrix.data["kingdom_name",2] <- "Viridiplantae"
       matrix.data["superkingdom_name",2] <- "Archaeplastida"
     }
 
-    if (scientific_name %in% c("Armophorea")) {
+   if (scientific_name %in% c("Armophorea")) {
       matrix.data["class_name",2] <- "Armophorea"
       matrix.data["phylum_name",2] <- "Ciliophora"
       matrix.data["kingdom_name",2] <- "Alveolata"
@@ -350,7 +316,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
       matrix.data["kingdom_name",2] <- "Metazoa"
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
     }
-    if (scientific_name %in%  c("Bdelloidea")) {
+   if (scientific_name %in%  c("Bdelloidea")) {
       matrix.data["class_name",2] <- "Eurotatoria"
       matrix.data["phylum_name",2] <- "Rotifera"
       matrix.data["kingdom_name",2] <- "Metazoa"
@@ -394,7 +360,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
       matrix.data["rank",2] <- "class"
     }
 
-    if (scientific_name == "Xanthophyceae") {
+        if (scientific_name == "Xanthophyceae") {
       matrix.data["class_name",2] <- "Xanthophyceae"
       matrix.data["phylum_name",2] <- "Ochrophyta"
       matrix.data["kingdom_name",2] <- "Stramenopiles"
@@ -497,7 +463,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
       matrix.data["rank",2] <- "kingdom"
     }
     if (scientific_name %in% c("Euteleostomi","Teleostei","Euteleosteomorpha","Actinopterygii","Clupeocephala","Eupercaria","Percomorphaceae",
-                               "Acanthomorphata","Euacanthomorphacea","Ctenosquamata","Euteleosteomorpha")) {
+			       "Acanthomorphata","Euacanthomorphacea","Ctenosquamata","Euteleosteomorpha")) {
       matrix.data["class_name",2] <- "Actinopterygii"
       matrix.data["phylum_name",2] <- "Chordata"
       matrix.data["kingdom_name",2] <- "Metazoa"
@@ -605,7 +571,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
       matrix.data["superkingdom_name",2] <- "Opisthokonta"
       matrix.data["rank",2] <- "order"
     }
-    if (scientific_name %in%  c("Patellogastropoda")) {
+      if (scientific_name %in%  c("Patellogastropoda")) {
       matrix.data["order_name",2] <- "Patellogastropoda"
       matrix.data["class_name",2] <- "Gastropoda"
       matrix.data["phylum_name",2] <- "Mollusca"
@@ -735,8 +701,8 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
   message("Read ",length(db)," records")
   for (fila in 1:length(db)) {
     infofasta <- info[fila]
-    if (length(gregexpr("ORDER_NAME=",infofasta)[[1]])==2) infofasta <- sub(pattern="; ORDER_NAME=",replacement="",x=infofasta)
-    if (length(gregexpr("ORDER=",infofasta)[[1]])==2) infofasta <- sub(pattern="ORDER=",replacement="",x=infofasta)
+    if (length(gregexpr("order_name",infofasta)[[1]])==2) infofasta <- sub(pattern="; order_name=",replacement="",x=infofasta)
+    if (length(gregexpr("order=",infofasta)[[1]])==2) infofasta <- sub(pattern="order=",replacement="",x=infofasta)
     id <- strsplit(infofasta,split=c(" "))[[1]][1]
     infofasta2 <- substr(infofasta,nchar(id)+2,nchar(infofasta))
     infofasta2 <- (strsplit(sub(pattern=";'",replacement="'",x=infofasta2),";"))
@@ -751,15 +717,12 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
                                    "superkingdom_name","sequence"))
       rownames(db.out) <- c("id",rownames(matrix.data),"class_name","phylum_name","kingdom_name",
                             "superkingdom_name","sequence")
-      inicio<-F
-    }
-    if (sum(grepl("ramosa",matrix.data$X2))!=0){
-      submatrix.data <- matrix.data$X2[grep(":",matrix.data$X2)]
-      dobles <- grep(":",matrix.data$X2)
-      for (j in 1:length(submatrix.data)) submatrix.data[j]  <-
-        substr(strsplit(submatrix.data[j],":")[[1]][2],2,nchar(strsplit(submatrix.data[j],":")[[1]][2])-1)
-      matrix.data$X2[dobles] <- submatrix.data
-    }
+      inicio<-F}
+    submatrix.data <- matrix.data$X2[grep(":",matrix.data$X2)]
+    dobles <- grep(":",matrix.data$X2)
+    for (j in 1:length(submatrix.data)) submatrix.data[j]  <-
+      substr(strsplit(submatrix.data[j],":")[[1]][2],2,nchar(strsplit(submatrix.data[j],":")[[1]][2])-1)
+    matrix.data$X2[dobles] <- submatrix.data
     matrix.data["id",2] <- substr(id,1,length_id)
     # matrix.data["seq_length",2] <- db@ranges@width[fila]
     matrix.data["sequence",2] <- as.character(db[fila])
@@ -825,7 +788,7 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
   }
   db.outt <- data.frame(t(db.out[-1]))
 
-  # Substitute commas by "|" in species_list and remove special characters
+ # Substitute commas by "|" in species_list and remove special characters
   db.outt$species_list <- gsub(", ","|",db.outt$species_list)
   db.outt$species_list <- gsub("\\[","",db.outt$species_list)
   db.outt$species_list <- gsub("\\]","",db.outt$species_list)
@@ -852,5 +815,4 @@ mjolnir5_THOR <- function(lib,cores,tax_dir,tax_dms=NULL,ref_db=NULL,taxo_db=NUL
 
   write.table(reordered_db.outt,outfile,row.names=F,col.names=T,sep="\t",quote = FALSE)
   message("THOR is done. He wrote the output file ",outfile," with ",length(db), " assigned sequences.")
-}
-
+  }

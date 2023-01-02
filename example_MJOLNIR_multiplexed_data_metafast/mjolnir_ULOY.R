@@ -10,10 +10,6 @@ lib_prefixes <- c("ULO1","ULO2","ULO3","ULO4")
 # Input name for the final combined library (should be a 4-character name)
 lib <- "ULOY"
 
-
-cores <- 3; setwd('~/Nextcloud/2_PROJECTES/MJOLNIR/adriantich_tests/');
-obipath="/home/adriantich/obi3-env/bin/"; lib_prefixes <- c("ULO1"); lib <- "ULOY"
-
 ####################
 # MJOLNIR pipeline #
 ####################
@@ -23,14 +19,13 @@ obipath="/home/adriantich/obi3-env/bin/"; lib_prefixes <- c("ULO1"); lib <- "ULO
 cores <- 3
 
 # RAN will distribute R1 & R2 fastq files into equal-sized pieces for parallel computing
-mjolnir1_RAN(R1_filenames,cores,lib_prefixes,R1_motif="_R1.",R2_motif="_R2.")
+mjolnir1_RAN(R1_filenames,cores,lib_prefixes,R1_motif="_R1.",R2_motif="_R2.") 
 
 # FREYJA will do the paired-end alignment, demultiplexing & length filtering. It will give individual filtered sample files as an output.
-mjolnir2_FREYJA(lib_prefix = lib_prefixes,lib = lib,cores = cores,Lmin=299,Lmax=320,obipath = obipath)
+mjolnir2_FREYJA(lib_prefixes,cores,Lmin=299,Lmax=320)
 
 # Now you can enter the total number of cores available in the system, for full computing power.
-# cores <- 16
-cores <- 3
+cores <- 16
 
 # HELA will remove chimaeric sequences in a sample-by-sample basis, will change identifiers of remaining unique sequences & will generate a table of their abundances in each sample & a fasta file with unique sequences and their total abundance for ODIN
 mjolnir3_HELA(lib,cores)
@@ -39,7 +34,7 @@ mjolnir3_HELA(lib,cores)
 mjolnir4_ODIN(lib,cores,d=13)
 
 # THOR will asign the taxonomy to the representative sequence of each MOTU
-mjolnir5_THOR(lib,cores,tax_dir="~/taxo_NCBI",ref_db="DUFA_Leray_20200610.fasta",taxo_db="taxo_NCBI")
+mjolnir5_THOR(lib,cores,tax_dir="~/taxo_NCBI",ref_db="DUFA_Leray_20200610.fasta",taxo_db="taxo_NCBI") 
 
 # FRIGGA will integrate the information of MOTU abundances and taxonomy assignment from ODIN & THOR in a single table
 mjolnir6_FRIGGA(lib)
