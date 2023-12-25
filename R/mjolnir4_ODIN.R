@@ -58,7 +58,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
 
   names(clusters) <- id
 
-  message("ODIN kept only ", total_swarms_reduced," MOTUs of size greater than or equal to ",min_reads_MOTU," reads.")
+  message("ODIN kept ", total_swarms_reduced," MOTUs of size greater than or equal to ",min_reads_MOTU," reads.")
   necesarios <- unlist(clusters, use.names=F)
   
   # Generate a file with the list of ids of non-singleton clusters
@@ -75,7 +75,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   numseqs_reduced <- nrow(db)
   samples <- length(names(db)[substr(names(db),1,6)=="sample"])
   message("ODIN finished reading the Database, which includes ", numseqs," total unique sequences and ",samples," samples.")
-  message("ODIN kept only ", numseqs_reduced," sequences for calculations.")
+  message("ODIN kept ", numseqs_reduced," sequences for calculations.")
 
   db.total <- merge(data.frame(id),db,by="id") # This will keep just the heads
   id <- db.total$id
