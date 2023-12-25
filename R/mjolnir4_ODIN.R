@@ -20,7 +20,7 @@ mjolnir4_ODIN <- function(lib,cores,d=13,min_reads_MOTU=2,min_reads_ESV=2,run_sw
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
   if (run_swarm){
     message("ODIN will cluster sequences into MOTUs with SWARM.")
-    system(paste0("swarm -d ",d," -z -t ",cores," -o ",lib,"_SWARM_output -s ",lib,"_SWARM",d,"nc_stats -w ",lib,"_SWARM_seeds.fasta ",lib,"_vsearch.fasta"),intern=T,wait=T)
+    system(paste0("swarm -d ",d," -z -f -t ",cores," -o ",lib,"_SWARM_output -s ",lib,"_SWARM",d,"nc_stats -w ",lib,"_SWARM_seeds.fasta ",lib,"_vsearch.fasta"),intern=T,wait=T)
     message("ODIN will recount abundances for every MOTU after Swarm.")
   }
   fileswarm=paste0(lib,"_SWARM_output")
