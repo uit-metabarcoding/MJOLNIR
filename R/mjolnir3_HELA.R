@@ -7,7 +7,7 @@
 # This is possibly a good idea for very large datasets (with > 5 million unique sequences before clustering)
 # The final dataset output is in VSEARCH format, so it can be directly fed into SWARM (ODIN).
 
-mjolnir3_HELA <- function(lib, cores, remove_singletons = TRUE, obipath = ""){
+mjolnir3_HELA <- function(lib, cores, remove_singletons = TRUE, vsearchpath = "", obipath = ""){
   old_path <- Sys.getenv("PATH")
   Sys.setenv(PATH = paste(old_path, obipath, sep = ":"))
   fastq_list <- list.files(pattern="^[a-zA-Z0-9]{4}_sample_[a-zA-Z0-9]{3}.fastq$")
@@ -31,7 +31,7 @@ mjolnir3_HELA <- function(lib, cores, remove_singletons = TRUE, obipath = ""){
   parLapply(clust,X, function(x) owi_obisample2vsearch(x))
   message("HELA will remove chimaeras from each sample")
   X <- NULL
-  for (i in sample_list) X <- c(X,paste0("vsearch --uchime_denovo ",i,"_unique_vsearch.fasta --sizeout --minh 0.90 --nonchimeras ",i,"_nonchimeras.fasta --chimeras ",i,"_chimeras.fasta --uchimeout ",i,"_uchimeout.log"))
+  for (i in sample_list) X <- c(X,paste0(vsearchpath,"vsearch --uchime_denovo ",i,"_unique_vsearch.fasta --sizeout --minh 0.90 --nonchimeras ",i,"_nonchimeras.fasta --chimeras ",i,"_chimeras.fasta --uchimeout ",i,"_uchimeout.log"))
   clusterExport(clust, "X",envir = environment())
   parLapply(clust,X, function(x) system(x,intern=T,wait=T))
   stopCluster(clust)
