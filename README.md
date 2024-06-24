@@ -18,13 +18,16 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
   As of 2024, Python 2 has been deprecated and it is not easy to install. However, you still can install it using Conda.  
 
   Install Conda
-  The easiest way to install Conda is probably the Miniconda installer from here: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
+  The easiest way to install Conda is probably the Miniconda installer from here:
+      https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
   
-  2. Create a Conda environment with Python 2.7 and activate it:
+  Then create a Conda environment with Python 2.7 and activate it:
+  
       conda create -n py27 python=2.7 
       conda activate py27
   
-  3. Install the needed dependencies with the right old versions and then install the OBITools:
+  Finally, install the needed dependencies with the right old versions and then install the OBITools:
+  
       sudo apt-get install python2-dev
       pip install sphinx==1.4.8 cython==0.29.21 docutils==0.16
       wget "https://git.metabarcoding.org/obitools/obitools/repository/archive.tar.gz?ref=master"
