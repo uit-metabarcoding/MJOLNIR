@@ -17,7 +17,8 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
   Note that OBITools 2 currently runs only on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the next commands.
   As of 2024, Python 2 has been deprecated and it is not easy to install. However, you still can install it using Conda.  
 
-  Install Conda
+  Install Conda:
+
   The easiest way to install Conda is probably the Miniconda installer from here:
       https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
   
@@ -35,12 +36,6 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
       python2 setup.py build
       python2 setup.py install
       
-  It is a good idea to permanently add the OBITools bin directory to the path, so there is no need to activate the OBI environment everytime. To do so, you can edit the .bashrc file in your home folder with any text editor (such as nano or vim) and add the following line:
-  
-      export PATH=$PATH:~/miniconda3/envs/py27/bin
-      
-  Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the previous commands,  
-
 - VSEARCH (Rognes et al. 2016): 
   Help on installing VSEARCH: https://github.com/torognes/vsearch
   
