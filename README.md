@@ -28,7 +28,6 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
   
   Finally, install the needed dependencies with the right old versions and then install the OBITools:
   
-      sudo apt-get install python2-dev
       pip install sphinx==1.4.8 cython==0.29.21 docutils==0.16
       wget "https://git.metabarcoding.org/obitools/obitools/repository/archive.tar.gz?ref=master"
       tar -zxvf "archive.tar.gz?ref=master"
