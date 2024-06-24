@@ -14,14 +14,17 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
 - OBITools (Boyer et al. 2016):
   Original information about OBITools here: https://git.metabarcoding.org/obitools/obitools/wikis/home
   Help on installing OBITools: http://rleca.pbworks.com/w/file/fetch/124098201/tuto_obitools_install_W10OS.html
-  If this does not work for you, The following set of commands would work in most systems for installing OBITools 2, based on recommendations by Frederic Boyer (https://www.biostars.org/p/235898/)
+  Note that OBITools 2 currently runs only on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the next commands.
+  As of 2024, Python 2 has been deprecated and it is not easy to install. However, you still can install it using Conda.  
 
-      sudo apt install python2
-      sudo pip install virtualenv
-      mkdir ~/OBI
-      cd ~/OBI 
-      virtualenv --python=python2 OBI-env
-      source ~/OBI/OBI-env/bin/activate
+      1. Install Conda
+      The easiest way to install Conda is probably the Miniconda installer from here: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
+  
+      2. Create a Conda environment with Python 2.7 and activate it:
+      conda create -n py27 python=2.7 
+      conda activate py27
+  
+      3. Install the needed dependencies with the right old versions and then install the OBITools:
       sudo apt-get install python2-dev
       pip install sphinx==1.4.8 cython==0.29.21 docutils==0.16
       wget "https://git.metabarcoding.org/obitools/obitools/repository/archive.tar.gz?ref=master"
@@ -29,11 +32,10 @@ MJOLNIR depends on the following dependencies, which must be installed in the sy
       cd obitools-master-*
       python2 setup.py build
       python2 setup.py install
-      export PATH=${PATH}:"~/OBI/OBI-env/bin"
-
-  It is a good idea to permanently add the OBI-env directory to the path, so there is no need to activate the OBI environment everytime. To do so, you can edit the .bashrc file in your home folder with any text editor (such as nano or vim) and add the following line:
+      
+  It is a good idea to permanently add the OBITools bin directory to the path, so there is no need to activate the OBI environment everytime. To do so, you can edit the .bashrc file in your home folder with any text editor (such as nano or vim) and add the following line:
   
-      export PATH=$PATH:~/OBI/OBI-env/bin
+      export PATH=$PATH:~/miniconda3/envs/py27/bin
       
   Note that OBITools currently runs on Python 2.7. It is not working in Python 3. So Python 2.7 is required for the instalation. Also OBITools will not work if the last version of sphinx is installed in the system. An old version of sphinx needs to be installed (hence the line "pip install sphinx==1.4.8 " in the previous commands,  
 
