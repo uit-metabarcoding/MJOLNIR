@@ -40,8 +40,7 @@ mjolnir8_RAGNAROC <- function(lib,metadata_table="",output_file="",min_reads=2,m
         new_total_reads <- rowSums(db_sample_ordered[,substr(names(db_sample_ordered),1,5)!="EMPTY"])
         db_new <- cbind(db[,no_sample_cols[-length(no_sample_cols)]],db_sample_ordered,sequence=db[,length(db)])
     # Remove empty and duplicated columns
-        db_new <- db_new[,substr(names(db_new),1,5)!="EMPTY" & substr(names(db_new),(nchar(names(db_new))-1),nchar(names(db_new)))!=".1"]
-    # Replace total_reads
+        db_new <- db_new[,substr(names(db_new),1,5)!="EMPTY" & (!names(db_new) %in% c("rank.1","scientific_name.1", "best_identity.1"))]
         db_new$total_reads <- new_total_reads
     # Remove MOTUs with new total_reads less than or equal than min_reads
         message("RAGNAROC is removing MOTUs with less than ",min_reads," total reads.")
